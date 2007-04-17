@@ -14,8 +14,8 @@ def plot(filename):
 			break
 		y.append(string.atof(line))
 
-	pylab.plot(y)
-	pylab.show()
+	# pylab.plot(y)
+	# pylab.show()
 
 	print filename + ":"
 	print "  num =", len(y)
