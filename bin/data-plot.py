@@ -14,6 +14,9 @@ def plot(filename):
 			break
 		y.append(string.atof(line))
 
+	if len(y) == 0:
+		return
+
 	print filename + ":"
 	print "  num =", len(y)
 	print "  min =", numpy.min(y)
@@ -25,4 +28,5 @@ def plot(filename):
 	pylab.plot(y)
 	pylab.show()
 
-plot(sys.argv[1])
+for data in sys.argv[1:]:
+    plot(data)
