@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 import sys
+
 import numpy
 import pylab
+
+from gandalf.backends import HUL
 
 def plot(filename):
 	y = []
@@ -17,16 +20,10 @@ def plot(filename):
 	if len(y) == 0:
 		return
 
-	print filename + ":"
-	print "  num =", len(y)
-	print "  min =", numpy.min(y)
-	print "  max =", numpy.max(y)
-	print " mean =", numpy.mean(y)
-	print "  sum =", sum(y)
-	print "  std =", numpy.std(y)
+	HUL.stats(y, label=filename)
 
 	pylab.plot(y)
 	pylab.show()
 
-for data in sys.argv[1:]:
-    plot(data)
+for filename in sys.argv[1:]:
+    plot(filename)
