@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import string, sys
+import sys
 import numpy
 import pylab
 
@@ -12,7 +12,7 @@ def plot(filename):
 		line = file.readline()
 		if not(line):
 			break
-		y.append(string.atof(line))
+		y.append(float(line))
 
 	if len(y) == 0:
 		return
