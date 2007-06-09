@@ -24,6 +24,7 @@ def plot(filename):
 
 	pylab.plot(y)
 	pylab.show()
+	pylab.title(filename)
 
 for filename in sys.argv[1:]:
     plot(filename)
