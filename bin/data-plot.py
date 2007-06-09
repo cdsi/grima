@@ -23,8 +23,8 @@ def plot(filename):
 	HUL.stats(y, label=filename)
 
 	pylab.plot(y)
-	pylab.show()
 	pylab.title(filename)
+	pylab.show()
 
 for filename in sys.argv[1:]:
     plot(filename)
