@@ -5,26 +5,42 @@ import sys
 import numpy
 import pylab
 
-from gandalf.backends import HUL
+def stats(x):
+	print "  num =", len(x)
+	print "  min =", numpy.min(x)
+	print "  max =", numpy.max(x)
+	print " mean =", numpy.mean(x)
+	print "  sum =", sum(x)
+	print "  std =", numpy.std(x)
 
-def plot(filename):
+def plot(f):
+	x = []
 	y = []
 
-	file = open(filename, 'r')
+	fp = open(f, 'r')
 	while True:
-		line = file.readline()
+		line = fp.readline()
 		if not(line):
 			break
-		y.append(float(line))
+		
+		_ = line.split(',')
+		x.append(float(_[0]))
+		try:
+			y.append(float(_[1]))
+		except IndexError:
+			y = []
 
-	if len(y) == 0:
-		return
+	if len(y):
+		pylab.plot(x, y)
+		print f + ":"
+		stats(y)
+	else:
+		pylab.plot(x)
+		print f + ":"
+		stats(x)
 
-	HUL.stats(y, label=filename)
-
-	pylab.plot(y)
-	pylab.title(filename)
+	pylab.title(f)
 	pylab.show()
 
-for filename in sys.argv[1:]:
-    plot(filename)
+for f in (sys.argv[1:]):
+	plot(f)
