@@ -5,13 +5,21 @@ import sys
 import numpy
 import pylab
 
-def stats(x):
-	print "  num =", len(x)
-	print "  min =", numpy.min(x)
-	print "  max =", numpy.max(x)
-	print " mean =", numpy.mean(x)
-	print "  sum =", sum(x)
-	print "  std =", numpy.std(x)
+def stats(y, x=None):
+	print "  len =", len(y)
+	print " mean =", numpy.mean(y)
+	print "  sum =", sum(y)
+	print "  std =", numpy.std(y)
+
+	ymin = numpy.min(y)
+	print " ymin =", ymin
+	if x:
+		print " xmin =", x[y.index(ymin)]
+
+	ymax = numpy.max(y)
+	print " ymax =", ymax
+	if x:
+		print " xmax =", x[y.index(ymax)]
 
 def plot(f):
 	x = []
@@ -33,7 +41,7 @@ def plot(f):
 	if len(y):
 		pylab.plot(x, y)
 		print f + ":"
-		stats(y)
+		stats(y, x=x)
 	else:
 		pylab.plot(x)
 		print f + ":"
