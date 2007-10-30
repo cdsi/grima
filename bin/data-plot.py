@@ -31,7 +31,7 @@ def plot(f):
 		if not(line):
 			break
 		
-		_ = line.split(',')
+		_ = line.split(', ')
 		x.append(float(_[0]))
 		try:
 			y.append(float(_[1]))
