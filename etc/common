@@ -46,3 +46,11 @@ export CONFIGUREFLAGS
 
 PYTHON=python
 PYTHONFLAGS=
+
+KRYTEN_EXTRAS="			\
+	kochanski		\
+"
+for x in ${KRYTEN_EXTRAS}; do
+	TOPLEVEL=${KRYTEN_HOME}/extras/${x}
+	. ${TOPLEVEL}/etc/common
+done
