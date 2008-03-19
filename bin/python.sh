@@ -1,8 +1,8 @@
 #!/bin/bash
 
-KRYTENI_HOME=$(dirname $0)/..
-export KRYTENI_HOME
+KRYTEN_HOME=$(dirname $0)/..
+export KRYTEN_HOME
 
-. ${KRYTENI_HOME}/etc/common
+. ${KRYTEN_HOME}/etc/common
 
 exec ${PYTHON} ${PYTHONFLAGS} $*
