@@ -5,7 +5,7 @@ KRYTEN_HOME=$(dirname $0)
 
 cd ${KRYTEN_HOME}
 
-./configure ${CONFIGUREFLAGS}
+./configure ${KRYTEN_CONFIGUREFLAGS}
 [ $? != 0 ] && echo "ERROR!!!" && exit 1
 
 exit 0
