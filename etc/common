@@ -1,3 +1,7 @@
+KRYTEN_DEPENDS="		\
+	python			\
+"
+
 # kochanski
 
 KRYTEN_HOME=${TOPLEVEL:=${KRYTEN_HOME}}
@@ -26,26 +30,56 @@ export KRYTEN_DB
 KRYTEN_LOG=${KRYTEN_VAR}/log
 export KRYTEN_LOG
 
+KRYTEN_CONFIGUREFLAGS="--prefix=${KRYTEN_HOME}" 
+export KRYTEN_CONFIGUREFLAGS
+
+# system
+
 PATH=${KRYTEN_BIN}:${PATH}
 export PATH
 
 LD_LIBRARY_PATH=${KRYTEN_LIB}:${LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
-PYTHONPATH=${LD_LIBRARY_PATH}:${PYTHONPATH}
-PYTHONPATH=${KRYTEN_LIB}/python:${PYTHONPATH}
-export PYTHONPATH
+for x in ${KRYTEN_DEPENDS}; do
+	[ ! -d /opt/${x} ] && continue
 
-KRYTEN_CONFIGUREFLAGS="--prefix=${KRYTEN_HOME}" 
-export KRYTEN_CONFIGUREFLAGS
+	PATH="/opt/${x}/bin:/opt/${x}/sbin:${PATH}"
+	export PATH
+
+	LD_LIBRARY_PATH="/opt/${x}/lib:${LD_LIBRARY_PATH}"
+	export LD_LIBRARY_PATH
+done
 
 # python
 
-PYTHON=python
-PYTHONFLAGS=
+PYTHON_HOME=/opt/python
+export PYTHON_HOME
 
-KRYTEN_EXTRAS="			\
-	kochanski		\
+PATH=${PYTHON_HOME}/bin:${PATH}
+export PATH
+
+PYTHON="$(which python)"
+export PYTHON
+
+PYTHONFLAGS=
+export PYTHONFLAGS
+
+PYTHONPATH=${LD_LIBRARY_PATH}:${PYTHONPATH}
+PYTHONPATH=${KRYTEN_LIB}:${KRYTEN_LIB}/python:${PYTHONPATH}
+export PYTHONPATH
+
+for x in ${KRYTEN_DEPENDS}; do
+	[ ! -d /opt/${x} ] && continue
+
+	PYTHONPATH=/opt/${x}/lib:/opt/${x}/lib/python:${PYTHONPATH}
+	export PYTHONPATH
+done
+
+# extras
+
+KRYTEN_EXTRAS="		\
+	kochanski	\
 "
 for x in ${KRYTEN_EXTRAS}; do
 	TOPLEVEL=${KRYTEN_HOME}/extras/${x}
