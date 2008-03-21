@@ -79,7 +79,7 @@ done
 # extras
 
 KRYTEN_EXTRAS="		\
-	kochanski	\
+	Elrond		\
 "
 for x in ${KRYTEN_EXTRAS}; do
 	TOPLEVEL=${KRYTEN_HOME}/extras/${x}
