@@ -332,7 +332,7 @@ class Window(Common):
 		self.ymin = 0
 		self.ymax = 0
 
-		gladename = os.environ['GRIMA_ETC'] + '/' + 'grima.glade'
+		gladename = os.environ['GRIMA_ETC'] + '/' + 'grima.xml'
 		self.__widgets = gtk.glade.XML(gladename)
 
 		map = {}
