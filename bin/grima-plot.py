@@ -3,7 +3,8 @@
 import sys
 
 import numpy
-import pylab
+
+from grima.plot import Plot
 
 def stats(y, x=None):
 	print "  len =", len(y)
@@ -21,34 +22,38 @@ def stats(y, x=None):
 	if x:
 		print " xmax =", x[y.index(ymax)]
 
-def plot(f):
+for f in (sys.argv[1:]):
 	x = []
 	y = []
 
 	fp = open(f, 'r')
+
 	while True:
 		line = fp.readline()
 		if not(line):
 			break
 		
-		_ = line.split(', ')
+		_ = line.split(',')
 		x.append(float(_[0]))
 		try:
 			y.append(float(_[1]))
 		except IndexError:
 			y = []
 
+	p = Plot()
+	p.enabled = True
+	p.type = 'window'
+	p.show()
+
+	print 'data: ', f
+
 	if len(y):
-		pylab.plot(x, y)
-		print f + ":"
+		p.plotl(x, y)
 		stats(y, x=x)
 	else:
-		pylab.plot(x)
-		print f + ":"
+		p.ploth(x)
 		stats(x)
 
-	pylab.title(f)
-	pylab.show()
+	p.draw()
+	p.run()
 
-for f in (sys.argv[1:]):
-	plot(f)
