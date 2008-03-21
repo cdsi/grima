@@ -19,7 +19,7 @@ import gtk
 import gtk.glade
 
 # our own libraries
-from kochanski.util import Object, Property
+from elrond.util import Object, Property
 
 class Common(Object):
 
