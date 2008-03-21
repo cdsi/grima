@@ -1,8 +1,8 @@
 #!/bin/bash
 
-KRYTEN_HOME=$(dirname $0)/..
-export KRYTEN_HOME
+GRIMA_HOME=$(dirname $0)/..
+export GRIMA_HOME
 
-. ${KRYTEN_HOME}/etc/common
+. ${GRIMA_HOME}/etc/common
 
 exec ${PYTHON} ${PYTHONFLAGS} $*

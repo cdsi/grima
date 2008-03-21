@@ -1,9 +1,9 @@
 #!/bin/bash
 
-KRYTEN_HOME=$(dirname $0)
-. ${KRYTEN_HOME}/etc/common
+GRIMA_HOME=$(dirname $0)
+. ${GRIMA_HOME}/etc/common
 
-cd ${KRYTEN_HOME}
+cd ${GRIMA_HOME}
 
 aclocal
 automake --add-missing --copy --force-missing --foreign

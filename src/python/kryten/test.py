@@ -1,6 +1,6 @@
 import unittest
 
-from kryten.plot import test as plottest
+from grima.plot import test as plottest
 
 def testsuite():
 	__testsuite = unittest.TestSuite()
