@@ -8,8 +8,6 @@ for x in ${GRIMA_EXTRAS}; do
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 done
 
-cd ${GRIMA_HOME}
-
 EVERYTHING=1
 OPTION=$1
 
@@ -32,6 +30,8 @@ case "${OPTION}" in
 		JUST_JAVA=1
 	;;
 esac
+
+cd ${GRIMA_HOME}
 
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_JAVA}" = "1" ]; then
         if [ -f build.xml ]; then
