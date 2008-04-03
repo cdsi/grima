@@ -8,7 +8,10 @@ for x in ${GRIMA_EXTRAS}; do
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 done
 
-cd ${GRIMA_HOME}
+if [ -x ${GRIMA_HOME}/build-local.sh ]; then
+        ${GRIMA_HOME}/build-local.sh
+        [ $? != 0 ] && echo "ERROR!!!" && exit 1
+fi
 
 EVERYTHING=1
 OPTION=$1
@@ -33,7 +36,7 @@ case "${OPTION}" in
 	;;
 esac
 
-[ -x build-setup.sh ] && ${GRIMA_HOME}/build-setup.sh
+cd ${GRIMA_HOME}
 
 if [ "${EVERYTHING}" = "1" ] || [ "${BACKENDS}" = "1" ]; then
 	[ "${FORCE:=0}" != "0" ] || [ ! -f Makefile.in ] && ./bootstrap.sh
