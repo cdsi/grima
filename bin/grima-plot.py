@@ -22,7 +22,7 @@ def stats(y, x=None):
         if x:
                 print " xmax =", x[y.index(ymax)]
 
-for f in (sys.argv[1:]):
+def parse(f):
         x = []
         y = []
 
@@ -33,26 +33,32 @@ for f in (sys.argv[1:]):
                 if not(line):
                         break
 
-                _ = line.split(',')
-                x.append(float(_[0]))
+                data = line.split(',')
+                x.append(float(data[0]))
                 try:
-                        y.append(float(_[1]))
+                        y.append(float(data[1]))
                 except IndexError:
                         y = []
+
+        return x, y
+
+if __name__ == "__main__":
 
         p = Plot()
         p.enabled = True
         p.type = 'window'
         p.show()
 
-        print 'data: ', f
+        for f in (sys.argv[1:]):
+                print 'data: ', f
+                x, y = parse(f)
 
-        if len(y):
-                p.plotl(x, y)
-                stats(y, x=x)
-        else:
-                p.ploth(x)
-                stats(x)
+                if len(y):
+                        p.plotl(x, y)
+                        stats(y, x=x)
+                else:
+                        p.ploth(x)
+                        stats(x)
 
         p.draw()
         p.run()
