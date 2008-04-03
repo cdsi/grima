@@ -2,7 +2,7 @@ GRIMA_DEPENDS="		\
 	python			\
 "
 
-# kochanski
+# grima
 
 GRIMA_HOME=${TOPLEVEL:=${GRIMA_HOME}}
 
