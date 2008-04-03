@@ -6,5 +6,5 @@ export GRIMA_HOME
 . ${GRIMA_HOME}/etc/common
 
 for data in $*; do
-	${PYTHON} ${PYTHONFLAGS} ${GRIMA_BIN}/grima-plot.py ${data} &
+	python.sh ${GRIMA_BIN}/grima-plot.py ${data} &
 done
