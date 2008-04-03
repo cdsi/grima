@@ -32,7 +32,7 @@ for f in (sys.argv[1:]):
                 line = fp.readline()
                 if not(line):
                         break
-                
+
                 _ = line.split(',')
                 x.append(float(_[0]))
                 try:
