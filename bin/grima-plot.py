@@ -50,7 +50,7 @@ if __name__ == "__main__":
         p.type = 'window'
         p.show()
 
-        color = 0xFF000
+        color = 0xFF0000
 
         for f in (sys.argv[1:]):
                 print 'data: ', f
