@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import random
 import sys
 
 import numpy
@@ -49,16 +50,20 @@ if __name__ == "__main__":
         p.type = 'window'
         p.show()
 
+        color = 0xFF000
+
         for f in (sys.argv[1:]):
                 print 'data: ', f
                 x, y = parse(f)
 
                 if len(y):
-                        p.plotl(x, y)
+                        p.plotl(x, y, color=color)
                         stats(y, x=x)
                 else:
-                        p.ploth(x)
+                        p.ploth(x, color=color)
                         stats(x)
+
+                color = int(random.getrandbits(24))
 
         p.draw()
         p.run()
