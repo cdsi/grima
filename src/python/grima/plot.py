@@ -361,9 +361,6 @@ class Plot(Object):
         @Property
         def xmin():
                 def fget(self):
-                        if self.__display is None:
-                                return None
-
                         return self.__display.xmin
 
                 def fset(self, xmin):
