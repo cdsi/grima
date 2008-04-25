@@ -126,9 +126,9 @@ class Backend(Object):
                 self.__axl.yaxis.set_label_position('left')
                 self.__axl.yaxis.tick_left()
 
-                self.__axr = self.__figure.add_axes(self.__axl.get_position(), sharex=self.__axl, frameon=False)
-                self.__axr.yaxis.set_label_position('right')
-                self.__axr.yaxis.tick_right()
+                # TODO: self.__axr = self.__figure.add_axes(self.__axl.get_position(), sharex=self.__axl, frameon=False)
+                # TODO: self.__axr.yaxis.set_label_position('right')
+                # TODO: self.__axr.yaxis.tick_right()
 
                 self.__subplot = self.__figure.add_subplot(111)
                 self.__subplot.grid(True)
