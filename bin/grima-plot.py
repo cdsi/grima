@@ -45,29 +45,23 @@ def parse(f):
 
         return x, y
 
-usage = """%prog [options] data1 data2 data3 ...
-
-options:
-
---title=\"Window Title\" (default is None)"""
-
 if __name__ == "__main__":
 
+        usage = """%prog [options] data1 data2 data3 ..."""
         op = OptionParser(usage)
 
         op.add_option('--title', action='store', dest='title', default=None,
-                      help='"Window Title" (default is None)')
+                      help='title to be used in plot window')
+        op.add_option('--type', action='store', dest='type', default='window',
+                      help='[console | window] default is window')
 
         (options, args) = op.parse_args()
 
         p = Plot()
         p.enabled = True
-        p.type = 'window'
+        p.title = options.title
+        p.type = options.type
         p.show()
-
-        if options.title:
-                # p.title = title
-                print title
 
         color = 0xFF0000
 
