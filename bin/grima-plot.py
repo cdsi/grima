@@ -47,8 +47,7 @@ def parse(f):
 
 if __name__ == "__main__":
 
-        usage = """%prog [options] data1 data2 data3 ..."""
-        op = OptionParser(usage)
+        op = OptionParser('%prog [options] data1 data2 data3 ...')
 
         op.add_option('--title', action='store', dest='title', default=None,
                       help='title to be used in plot window')
