@@ -53,26 +53,33 @@ function recorde
 }
 
 GRIMA_DEPENDS="                 \
-	binutils		\
-	gcc			\
-	swig			\
-	cairo			\
-	glib			\
-	atk			\
-	pango			\
-	gtk+			\
-	libglade		\
-	python			\
-	ant			\
-	java			\
-	netbeans		\
-	dbxml			\
-	nttcp			\
-	pcre			\
-	lighttpd		\
-	openssl		        \
-	neon		        \
-	subversion		\
+        m4                      \
+        autoconf                \
+        automake                \
+        libtool                 \
+        binutils                \
+        gmp                     \
+        mpfr                    \
+        gcc                     \
+        pkg-config              \
+        swig                    \
+        cairo                   \
+        glib                    \
+        atk                     \
+        pango                   \
+        gtk+                    \
+        libglade                \
+        python                  \
+        ant                     \
+        java                    \
+        netbeans                \
+        dbxml                   \
+        nttcp                   \
+        pcre                    \
+        lighttpd                \
+        openssl                 \
+        neon                    \
+        subversion              \
 "
 
 # native
@@ -94,6 +101,9 @@ for x in ${GRIMA_DEPENDS}; do
 
 	LD_LIBRARY_PATH="/opt/${x}/lib:${LD_LIBRARY_PATH}"
 	export LD_LIBRARY_PATH
+
+        PKG_CONFIG_PATH="/opt/${x}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+        export PKG_CONFIG_PATH
 done
 
 SVNHOST=dev.creativedigitalsys.com
