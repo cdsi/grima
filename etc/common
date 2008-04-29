@@ -4,9 +4,6 @@ GRIMA_HOME=${TOPLEVEL:=${GRIMA_HOME}}
 GRIMA_HOME=$(cd ${GRIMA_HOME}; pwd)
 export GRIMA_HOME
 
-GRIMA_M4=${GRIMA_HOME}/m4
-export GRIMA_M4
-
 GRIMA_BIN=${GRIMA_HOME}/bin
 export GRIMA_BIN
 
@@ -34,6 +31,12 @@ export GRIMA_RUN
 GRIMA_WWW=${GRIMA_HOME}/www
 export GRIMA_WWW
 
+GRIMA_SHARE=${GRIMA_HOME}/share
+export GRIMA_SHARE
+
+GRIMA_DEPENDS="$(cat ${GRIMA_SHARE}/depends.list)"
+export GRIMA_DEPENDS
+
 GRIMA_CONFIGUREFLAGS="--prefix=${GRIMA_HOME}" 
 export GRIMA_CONFIGUREFLAGS
 
@@ -52,36 +55,6 @@ function recorde
 	echo	"$1"
 }
 
-GRIMA_DEPENDS="                 \
-	m4		        \
-	autoconf	        \
-	automake	        \
-	libtool 	        \
-	binutils		\
-	gmp			\
-	mpfr			\
-	gcc			\
-	swig			\
-	ant			\
-	java			\
-	freetype		\
-	fontconfig		\
-	cairo			\
-	glib			\
-	atk			\
-	pango			\
-	gtk+			\
-	libglade		\
-	python			\
-	dbxml			\
-	nttcp			\
-	pcre			\
-	lighttpd		\
-	subversion		\
-	valgrind		\
-	netbeans		\
-"
-
 # native
 
 PATH=${GRIMA_BIN}:${PATH}
@@ -92,6 +65,9 @@ export PATH
 
 LD_LIBRARY_PATH=${GRIMA_LIB}:${LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
+
+ACLOCALFLAGS="-I ${GRIMA_SHARE}/aclocal"
+export ACLOCALFLAGS
 
 for x in ${GRIMA_DEPENDS}; do
 	[ ! -d /opt/${x} ] && continue
@@ -104,6 +80,10 @@ for x in ${GRIMA_DEPENDS}; do
 
         PKG_CONFIG_PATH="/opt/${x}/lib/pkgconfig:${PKG_CONFIG_PATH}"
         export PKG_CONFIG_PATH
+
+        ACLOCAL="/opt/${x}/share/aclocal"
+        [ ! -d ${ACLOCAL} ] && continue
+        ACLOCALFLAGS="-I ${ACLOCAL} ${ACLOCALFLAGS}"
 done
 
 SVNHOST=dev.creativedigitalsys.com
