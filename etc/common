@@ -53,33 +53,33 @@ function recorde
 }
 
 GRIMA_DEPENDS="                 \
-        m4                      \
-        autoconf                \
-        automake                \
-        libtool                 \
-        binutils                \
-        gmp                     \
-        mpfr                    \
-        gcc                     \
-        pkg-config              \
-        swig                    \
-        cairo                   \
-        glib                    \
-        atk                     \
-        pango                   \
-        gtk+                    \
-        libglade                \
-        python                  \
-        ant                     \
-        java                    \
-        netbeans                \
-        dbxml                   \
-        nttcp                   \
-        pcre                    \
-        lighttpd                \
-        openssl                 \
-        neon                    \
-        subversion              \
+	m4		        \
+	autoconf	        \
+	automake	        \
+	libtool 	        \
+	binutils		\
+	gmp			\
+	mpfr			\
+	gcc			\
+	swig			\
+	ant			\
+	java			\
+	freetype		\
+	fontconfig		\
+	cairo			\
+	glib			\
+	atk			\
+	pango			\
+	gtk+			\
+	libglade		\
+	python			\
+	dbxml			\
+	nttcp			\
+	pcre			\
+	lighttpd		\
+	subversion		\
+	valgrind		\
+	netbeans		\
 "
 
 # native
