@@ -227,7 +227,7 @@ export NETBEANSFLAGS
 
 # extras
 
-GRIMA_EXTRAS="		        \
+GRIMA_EXTRAS="                  \
         Elrond                  \
 "
 
