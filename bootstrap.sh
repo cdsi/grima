@@ -5,6 +5,6 @@ GRIMA_HOME=$(dirname $0)
 
 cd ${GRIMA_HOME}
 
-aclocal ${ACLOCALFLAGS}
+aclocal ${GRIMA_ACLOCALFLAGS}
 automake --add-missing --copy --force-missing --foreign
 autoconf

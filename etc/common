@@ -66,8 +66,8 @@ export PATH
 LD_LIBRARY_PATH=${GRIMA_LIB}:${LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
-ACLOCALFLAGS="-I ${GRIMA_SHARE}/aclocal"
-export ACLOCALFLAGS
+GRIMA_ACLOCALFLAGS="-I ${GRIMA_SHARE}/aclocal"
+export GRIMA_ACLOCALFLAGS
 
 for x in ${GRIMA_DEPENDS}; do
 	[ ! -d /opt/${x} ] && continue
@@ -83,7 +83,7 @@ for x in ${GRIMA_DEPENDS}; do
 
         ACLOCAL="/opt/${x}/share/aclocal"
         [ ! -d ${ACLOCAL} ] && continue
-        ACLOCALFLAGS="-I ${ACLOCAL} ${ACLOCALFLAGS}"
+        GRIMA_ACLOCALFLAGS="-I ${ACLOCAL} ${GRIMA_ACLOCALFLAGS}"
 done
 
 SVNHOST=dev.creativedigitalsys.com
