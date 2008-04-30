@@ -56,14 +56,14 @@ if __name__ == "__main__":
 
         p = Plot()
         p.enabled = True
-        p.title = options.title
         p.type = options.type
+        p.title = options.title
         p.show()
 
         color = 0xFF0000
 
         for f in args:
-                print 'data: ', f
+                print 'data:', f
                 x, y = parse(f)
 
                 if len(y):
