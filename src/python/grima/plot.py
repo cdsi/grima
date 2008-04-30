@@ -308,9 +308,9 @@ class Plot(Object):
 
                 self.__display = None
 
-                if self.type is 'console':
+                if self.type == 'console':
                         self.__display = Console()
-                if self.type is 'window':
+                if self.type == 'window':
                         self.__display = Window(self.container)
 
                 if not self.__display:
