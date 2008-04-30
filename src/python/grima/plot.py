@@ -28,19 +28,7 @@ class Common(Object):
                 f.writelines([','.join(xandy) + '\n' for xandy in xandys])
                 f.close()
 
-        def __init__(self):
-                Object.__init__(self)
-
 class Console(Common):
-
-        def show(self, *args, **kwargs):
-                pass
-
-        def hide(self, *args, **kwargs):
-                pass
-
-        def run(self, *args, **kwargs):
-                pass
 
         def __plot(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
                 for i, v in enumerate(x):
@@ -65,37 +53,38 @@ class Console(Common):
         def clear(self, *args, **kwargs):
                 pass
 
+        def show(self, *args, **kwargs):
+                pass
+
+        def hide(self, *args, **kwargs):
+                pass
+
+        def run(self, *args, **kwargs):
+                pass
+
 class Backend(Object):
-
-        def show(self):
-                self.__canvas.show()
-                self.__toolbar.show()
-                self.widget.show()
-
-        def hide(self):
-                self.widget.hide()
-                self.__toolbar.hide()
-                self.__canvas.hide()
 
         def __plot(self, x, y, style='-', color=0xFF0000, xlabel=None, ylabel=None):
                 conv = lambda elem: str(elem)
                 self.xandys = zip(map(conv, x), map(conv, y))
 
-                if xlabel != None: self.__subplot.set_xlabel(xlabel)
-                if ylabel != None: self.__subplot.set_ylabel(ylabel)
+                if xlabel != None:
+                        self.__subplot.set_xlabel(xlabel)
+                if ylabel != None:
+                        self.__subplot.set_ylabel(ylabel)
 
                 self.__subplot.plot(x, y, style, color='#%06X' % (color))
                 self.__subplot.grid(True)
 
         def plotr(self, *args, **kwargs):
                 self.__figure.sca(self.__axr)
-                if kwargs.has_key('color') is False:
+                if not kwargs.has_key('color'):
                         kwargs['color'] = 0x00FF00
                 self.__plot(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
                 self.__figure.sca(self.__axl)
-                if kwargs.has_key('color') is False:
+                if not kwargs.has_key('color'):
                         kwargs['color'] = 0xFF0000
                 self.__plot(*args, **kwargs)
 
@@ -110,8 +99,10 @@ class Backend(Object):
         def draw(self):
                 self.__subplot.axis('auto')
 
-                if (self.xmin != 0 or self.xmax != 0 or self.ymin != 0 or self.ymax != 0):
-                        self.__subplot.axis([self.xmin, self.xmax, self.ymin, self.ymax])
+                limits = [self.plot.xmin, self.plot.xmax, self.plot.ymin, self.plot.ymax]
+
+                if filter(lambda x: x != 0, limits):
+                        self.__subplot.axis(limits)
 
                 self.__canvas.draw()
 
@@ -119,7 +110,18 @@ class Backend(Object):
                 self.__subplot.clear()
                 self.__subplot.grid(True)
 
+        def show(self):
+                self.__canvas.show()
+                self.__toolbar.show()
+                self.widget.show()
+
+        def hide(self):
+                self.widget.hide()
+                self.__toolbar.hide()
+                self.__canvas.hide()
+
         def __init__(self):
+                Object.__init__(self)
                 self.__figure = Figure()
 
                 self.__axl = self.__figure.gca()
@@ -133,7 +135,7 @@ class Backend(Object):
                 self.__subplot = self.__figure.add_subplot(111)
                 self.__subplot.grid(True)
 
-                self.widget = gtk.VBox() # widget must be a GTK+ widget
+                self.widget = gtk.VBox()
 
                 self.__canvas = FigureCanvas(self.__figure)
                 self.widget.pack_start(self.__canvas)
@@ -146,98 +148,81 @@ class Backend(Object):
 class Window(Common):
 
         @Property
-        def xmin():
+        def plot():
                 def fget(self):
-                        if self.__backend is None:
-                                return None
+                        return self.__plot
 
-                        return self.__backend.xmin
+                def fset(self, plot):
+                        self.__plot = plot
 
-                def fset(self, xmin):
-                        if self.__backend is None:
-                                return
-
-                        self.__backend.xmin = xmin
-
-                        if self.__widgets is None:
-                                return
+                        self.__backend.plot = self.__plot
 
                         widget = self.__widgets.get_widget('preferences_xmin_entry')
-                        widget.set_text(str(xmin))
-
-                return locals()
-
-        @Property
-        def xmax():
-                def fget(self):
-                        if self.__backend is None:
-                                return None
-
-                        return self.__backend.xmax
-
-                def fset(self, xmax):
-                        if self.__backend is None:
-                                return
-
-                        self.__backend.xmax = xmax
-
-                        if self.__widgets is None:
-                                return
+                        widget.set_text(str(self.__plot.xmin))
 
                         widget = self.__widgets.get_widget('preferences_xmax_entry')
-                        widget.set_text(str(xmax))
-
-                return locals()
-
-        @Property
-        def ymin():
-                def fget(self):
-                        if self.__backend is None:
-                                return None
-
-                        return self.__backend.ymin
-
-                def fset(self, ymin):
-                        if self.__backend is None:
-                                return
-
-                        self.__backend.ymin = ymin
-
-                        if self.__widgets is None:
-                                return
+                        widget.set_text(str(self.__plot.xmax))
 
                         widget = self.__widgets.get_widget('preferences_ymin_entry')
-                        widget.set_text(str(ymin))
+                        widget.set_text(str(self.__plot.ymin))
+
+                        widget = self.__widgets.get_widget('preferences_ymax_entry')
+                        widget.set_text(str(self.__plot.ymax))
 
                 return locals()
 
         @Property
-        def ymax():
+        def title():
                 def fget(self):
-                        if self.__backend is None:
-                                return None
+                        return self.__title
 
-                        return self.__backend.ymax
+                def fset(self, title):
+                        self.__title = title
 
-                def fset(self, ymax):
-                        if self.__backend is None:
+                        if not self.__title:
                                 return
 
-                        self.__backend.ymax = ymax
-
-                        if self.__widgets is None:
-                                return
-
-                        widget = self.__widgets.get_widget('preferences_ymax_entry')
-                        widget.set_text(str(ymax))
+                        self.__container.set_title(self.__title)
 
                 return locals()
+
+        def plotr(self, *args, **kwargs):
+                self.__backend.plotr(*args, **kwargs)
+
+        def plotl(self, *args, **kwargs):
+                self.__backend.plotl(*args, **kwargs)
+
+        def ploth(self, *args, **kwargs):
+                self.__backend.ploth(*args, **kwargs)
+
+        def plotv(self, *args, **kwargs):
+                self.__backend.plotv(*args, **kwargs)
+
+        def draw(self, *args, **kwargs):
+                self.__backend.draw(*args, **kwargs)
+
+        def clear(self, *args, **kwargs):
+                if self.overlay:
+                        return
+
+                self.__backend.clear(*args, **kwargs)
+
+        def show(self):
+                self.__backend.show()
+                self.__container.show()
+
+        def hide(self):
+                self.__container.hide()
+                self.__backend.hide()
+
+        def run(self):
+                gtk.main()
 
         def on_saveas_ok_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
 
                 filename = self.__saveas.get_filename()
-                if filename is None:
+                if not filename:
                         return
 
                 self.saveas(filename, self.__backend.xandys)
@@ -257,16 +242,16 @@ class Window(Common):
                 self.__preferences.hide()
 
                 widget = self.__widgets.get_widget('preferences_xmin_entry')
-                self.__backend.xmin = float(widget.get_text())
+                self.plot.xmin = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_xmax_entry')
-                self.__backend.xmax = float(widget.get_text())
+                self.plot.xmax = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_ymin_entry')
-                self.__backend.ymin = float(widget.get_text())
+                self.plot.ymin = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_ymax_entry')
-                self.__backend.ymax = float(widget.get_text())
+                self.plot.ymax = float(widget.get_text())
 
                 self.draw()
 
@@ -287,60 +272,19 @@ class Window(Common):
         def on_plot_window_destroy(self, widget, data=None):
                 gtk.main_quit()
 
-        def show(self):
-                self.__backend.show()
-                self.__container.show()
-
-        def hide(self):
-                self.__container.hide()
-                self.__backend.hide()
-
-        def run(self):
-                gtk.main()
-
-        def plotr(self, *args, **kwargs):
-                self.__backend.plotr(*args, **kwargs)
-
-        def plotl(self, *args, **kwargs):
-                self.__backend.plotl(*args, **kwargs)
-
-        def ploth(self, *args, **kwargs):
-                self.__backend.ploth(*args, **kwargs)
-
-        def plotv(self, *args, **kwargs):
-                self.__backend.plotv(*args, **kwargs)
-
-        def draw(self, *args, **kwargs):
-                self.__backend.draw(*args, **kwargs)
-
-        def clear(self, *args, **kwargs):
-                if self.overlay is True:
-                        return
-
-                self.__backend.clear(*args, **kwargs)
-
         def __init__(self, container):
                 Common.__init__(self)
-
-                # TODO: this should not be needed, but is required by the glade autoconnect below
-                self.__widgets = None
                 self.__backend = Backend()
-
-                # TODO: this should not be needed, but is required by the glade autoconnect below
-                self.xmin = 0
-                self.xmax = 0
-                self.ymin = 0
-                self.ymax = 0
 
                 gladename = os.environ['GRIMA_ETC'] + '/' + 'grima-plot.xml'
                 self.__widgets = gtk.glade.XML(gladename)
 
                 map = {}
-                for key in dir(self.__class__):
+                for key in filter(lambda x: x.startswith('on_'), dir(self.__class__)):
                         map[key] = getattr(self, key)
                 self.__widgets.signal_autoconnect(map)
 
-                if container is not None:
+                if container:
                         self.__container = container
                         widget = self.__widgets.get_widget('plot_embeddable')
                         container = self.__widgets.get_widget('plot_container')
@@ -358,82 +302,33 @@ class Window(Common):
 
 class Plot(Object):
 
-        @Property
-        def xmin():
-                def fget(self):
-                        return self.__display.xmin
-
-                def fset(self, xmin):
-                        if self.__display is None:
-                                return None
-
-                        self.__display.xmin = xmin
-
-                return locals()
-
-        @Property
-        def xmax():
-                def fget(self):
-                        return self.__display.xmax
-
-                def fset(self, xmax):
-                        self.__display.xmax = xmax
-
-                return locals()
-
-        @Property
-        def ymin():
-                def fget(self):
-                        return self.__display.ymin
-
-                def fset(self, ymin):
-                        self.__display.ymin = ymin
-
-                return locals()
-
-        @Property
-        def ymax():
-                def fget(self):
-                        return self.__display.ymax
-
-                def fset(self, ymax):
-                        self.__display.ymax = ymax
-
-                return locals()
-
-        @Property
-        def overlay():
-                def fget(self):
-                        return self.__display.overlay
-
-                def fset(self, overlay):
-                        self.__display.overlay = overlay
-
-                return locals()
-
         def __create_display(self):
-                try:
-                        if self.enabled is False:
-                                return
-                except:
+                if not self.enabled:
                         return
 
                 self.__display = None
 
-                try:
-                        if self.type is 'console':
-                                self.__display = Console()
-                        if self.type is 'window':
-                                self.__display = Window(self.container)
+                if self.type is 'console':
+                        self.__display = Console()
+                if self.type is 'window':
+                        self.__display = Window(self.container)
 
-                        # TODO: use properties
-                        self.xmin = 0
-                        self.xmax = 0
-                        self.ymin = 0
-                        self.ymax = 0
-                        self.overlay = False
-                except:
+                if not self.__display:
                         self.enabled = False
+                        return
+
+                self.__display.plot = self
+
+        @Property
+        def enabled():
+                def fget(self):
+                        return self.__enabled
+
+                def fset(self, enabled):
+                        self.__enabled = enabled
+                        self.__create_display()
+
+                return locals()
 
         @Property
         def type():
@@ -447,78 +342,89 @@ class Plot(Object):
                 return locals()
 
         @Property
-        def enabled():
+        def title():
                 def fget(self):
-                        return self.__enabled
+                        return self.__title
 
-                def fset(self, enabled):
-                        self.__enabled = enabled
-                        self.__create_display()
+                def fset(self, title):
+                        self.__title = title
+
+                        if not self.__display:
+                                return
+
+                        self.__display.title = self.__title
 
                 return locals()
 
-        def show(self, *args, **kwargs):
-                if self.enabled is False:
-                        return
-
-                self.__display.show(*args, **kwargs)
-
-        def hide(self, *args, **kwargs):
-                if self.enabled is False:
-                        return
-
-                self.__display.hide(*args, **kwargs)
-
-        def run(self, *args, **kwargs):
-                if self.enabled is False:
-                        return
-
-                self.__display.run(*args, **kwargs)
-
         def plotr(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.plotr(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.plotl(*args, **kwargs)
 
         def ploth(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.ploth(*args, **kwargs)
 
         def plotv(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.plotv(*args, **kwargs)
 
         def draw(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.draw(*args, **kwargs)
 
         def clear(self, *args, **kwargs):
-                if self.enabled is False:
+                if not self.enabled:
                         return
 
                 self.__display.clear(*args, **kwargs)
 
+        def show(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.show(*args, **kwargs)
+
+        def hide(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.hide(*args, **kwargs)
+
+        def run(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.run(*args, **kwargs)
+
         def __init__(self):
                 Object.__init__(self)
+                self.__display = None
 
-                self.type = 'console'
-                self.container = None
                 self.enabled = False
+                self.container = None
+                self.type = 'console'
+                self.title = None
 
-                # TODO: use properties
+                # TODO: use preferences
+                self.xmin = 0
+                self.xmax = 0
+                self.ymin = 0
+                self.ymax = 0
+                self.overlay = False
 
 # Local Variables:
 # indent-tabs-mode: nil
