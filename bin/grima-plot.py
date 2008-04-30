@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import re
 import sys
 
 import numpy
@@ -9,7 +10,7 @@ from optparse import OptionParser
 
 from grima.plot import Plot
 
-def stats(y, x=None):
+def stats(x, y):
         print "  len =", len(y)
         print " mean =", numpy.mean(y)
         print "  sum =", sum(y)
@@ -17,26 +18,23 @@ def stats(y, x=None):
 
         ymin = numpy.min(y)
         print " ymin =", ymin
-        if x:
-                print " xmin =", x[y.index(ymin)]
+        print " xmin =", x[y.index(ymin)]
 
         ymax = numpy.max(y)
         print " ymax =", ymax
-        if x:
-                print " xmax =", x[y.index(ymax)]
+        print " xmax =", x[y.index(ymax)]
 
 def parse(f):
         x = []
         y = []
 
-        fp = open(f, 'r')
+        fd = open(f, 'r')
+        lines = [l.strip() for l in fd.readlines()]
+        fd.close()
 
-        while True:
-                line = fp.readline()
-                if not(line):
-                        break
+        for line in lines:
+                data = filter(lambda x: x != '', re.split('[, ]', line.strip()))
 
-                data = line.split(',')
                 x.append(float(data[0]))
                 try:
                         y.append(float(data[1]))
@@ -64,16 +62,15 @@ if __name__ == "__main__":
 
         color = 0xFF0000
 
-        for f in (sys.argv[1:]):
+        for f in args:
                 print 'data: ', f
                 x, y = parse(f)
 
                 if len(y):
                         p.plotl(x, y, color=color)
-                        stats(y, x=x)
+                        stats(x, y)
                 else:
                         p.ploth(x, color=color)
-                        stats(x)
 
                 color = int(random.getrandbits(24))
 
