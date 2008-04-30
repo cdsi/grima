@@ -313,6 +313,7 @@ class Plot(Object):
 
                 try:
                         self.__display.plot = self
+                        self.__display.title = self.title
                 except:
                         self.enabled = False
 
@@ -345,11 +346,6 @@ class Plot(Object):
 
                 def fset(self, title):
                         self.__title = title
-
-                        try:
-                                self.__display.title = self.__title
-                        except:
-                                pass
 
                 return locals()
 
