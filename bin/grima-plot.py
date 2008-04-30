@@ -55,9 +55,12 @@ if __name__ == "__main__":
         (options, args) = op.parse_args()
 
         p = Plot()
+
         p.type = options.type
         p.title = options.title
-        p.show()
+
+        p.enabled = True
+        p.overlay = True
 
         color = 0xFF0000
 
@@ -73,6 +76,7 @@ if __name__ == "__main__":
 
                 color = int(random.getrandbits(24))
 
+        p.show()
         p.draw()
         p.run()
 

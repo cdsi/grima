@@ -202,7 +202,7 @@ class Window(Common):
                 self.__backend.draw(*args, **kwargs)
 
         def clear(self, *args, **kwargs):
-                if self.overlay:
+                if self.plot.overlay:
                         return
 
                 self.__backend.clear(*args, **kwargs)
@@ -267,7 +267,7 @@ class Window(Common):
                 return True
 
         def on_plot_overlay_button_toggled(self, widget, data=None):
-                self.overlay = widget.get_active()
+                self.plot.overlay = widget.get_active()
 
         def on_plot_window_destroy(self, widget, data=None):
                 gtk.main_quit()
@@ -306,18 +306,15 @@ class Plot(Object):
                 if not self.enabled:
                         return
 
-                self.__display = None
-
                 if self.type == 'console':
                         self.__display = Console()
                 if self.type == 'window':
                         self.__display = Window(self.container)
 
-                if not self.__display:
+                try:
+                        self.__display.plot = self
+                except:
                         self.enabled = False
-                        return
-
-                self.__display.plot = self
 
         @Property
         def enabled():
@@ -349,10 +346,10 @@ class Plot(Object):
                 def fset(self, title):
                         self.__title = title
 
-                        if not self.__display:
-                                return
-
-                        self.__display.title = self.__title
+                        try:
+                                self.__display.title = self.__title
+                        except:
+                                pass
 
                 return locals()
 
@@ -412,11 +409,10 @@ class Plot(Object):
 
         def __init__(self):
                 Object.__init__(self)
-                self.__display = None
 
-                self.enabled = True
+                self.enabled = False
                 self.container = None
-                self.type = 'window'
+                self.type = 'console'
                 self.title = None
 
                 # TODO: use preferences
