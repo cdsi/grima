@@ -414,9 +414,9 @@ class Plot(Object):
                 Object.__init__(self)
                 self.__display = None
 
-                self.enabled = False
+                self.enabled = True
                 self.container = None
-                self.type = 'console'
+                self.type = 'window'
                 self.title = None
 
                 # TODO: use preferences

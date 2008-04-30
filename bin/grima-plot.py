@@ -55,7 +55,6 @@ if __name__ == "__main__":
         (options, args) = op.parse_args()
 
         p = Plot()
-        p.enabled = True
         p.type = options.type
         p.title = options.title
         p.show()
