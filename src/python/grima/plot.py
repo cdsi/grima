@@ -21,31 +21,19 @@ import gtk.glade
 # our own libraries
 from elrond.util import Object, Property
 
-class Common(Object):
-
-        def saveas(self, filename, xandys):
-                f = open(filename, 'w')
-                f.writelines([','.join(xandy) + '\n' for xandy in xandys])
-                f.close()
-
-class Console(Common):
-
-        def __plot(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
-                for i, v in enumerate(x):
-                        print 'index:', i
-                        print 'x, y = %.4f, %4f' % (x[i], y[i])
+class IPlot(Object):
 
         def plotr(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                pass
 
         def plotl(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                pass
 
         def ploth(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                pass
 
         def plotv(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                pass
 
         def draw(self, *args, **kwargs):
                 pass
@@ -61,6 +49,29 @@ class Console(Common):
 
         def run(self, *args, **kwargs):
                 pass
+
+        def saveas(self, filename, xandys):
+                f = open(filename, 'w')
+                f.writelines([','.join(xandy) + '\n' for xandy in xandys])
+                f.close()
+
+class Console(IPlot):
+
+        def __plot(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
+                for i, v in enumerate(x):
+                        print 'x,y[%d] = %.4f, %4f' % (i, x[i], y[i])
+
+        def plotr(self, *args, **kwargs):
+                self.__plot(*args, **kwargs)
+
+        def plotl(self, *args, **kwargs):
+                self.__plot(*args, **kwargs)
+
+        def ploth(self, *args, **kwargs):
+                self.__plot(*args, **kwargs)
+
+        def plotv(self, *args, **kwargs):
+                self.__plot(*args, **kwargs)
 
 class Backend(Object):
 
@@ -145,7 +156,7 @@ class Backend(Object):
 
                 self.xandys = []
 
-class Window(Common):
+class Window(IPlot):
 
         @Property
         def plot():
@@ -273,7 +284,6 @@ class Window(Common):
                 gtk.main_quit()
 
         def __init__(self, container):
-                Common.__init__(self)
                 self.__backend = Backend()
 
                 gladename = os.environ['GRIMA_ETC'] + '/' + 'grima-plot.xml'
