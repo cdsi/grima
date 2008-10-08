@@ -51,7 +51,7 @@ if __name__ == "__main__":
         op.add_option('--title', action='store', dest='title', default=None,
                       help='title to be used in plot window')
         op.add_option('--type', action='store', dest='type', default='window',
-                      help='[console | window] default is window')
+                      help='[console | window | image:filename] default is window')
 
         (options, args) = op.parse_args()
 
