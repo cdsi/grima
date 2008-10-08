@@ -3,18 +3,8 @@ import os
 
 # matplotlib.sf.net
 import matplotlib
-matplotlib.use('GTK')
-
-from matplotlib.axes import Axes
-from matplotlib.figure import Figure
-
-from matplotlib.backends.backend_gtk \
-        import FigureCanvasGTK as FigureCanvas
-from matplotlib.backends.backend_gtk \
-        import NavigationToolbar2GTK as NavigationToolbar
 
 # www.gtk.org
-import gobject
 import gtk
 import gtk.glade
 
@@ -60,9 +50,6 @@ class IBackend(Object):
         def run(self, *args, **kwargs):
                 pass
 
-        def __image__(self, *args, **kwargs):
-                pass
-
 class ConsoleBackend(IBackend):
         """This is the simplest of backends. This simply prints to the console. This backend
         must be used within a ConsoleContainer.
@@ -74,29 +61,10 @@ class ConsoleBackend(IBackend):
                 for i in range(0, len(x)):
                         print 'x,y[%d] = %.4f, %4f' % (i, x[i], y[i])
 
-class MatplotlibBackend(IBackend):
+class IMatplotlibBackend(IBackend):
         """This backend uses matplotlib to prodce plots. An ImageContainer or WindowContainer in-turn
         contains this backed to either render the plot to and image or to a GUI.
         """
-
-        @Property
-        def widget():
-                def fget(self):
-                        if not self.__haswidget:
-                                self.__widget = gtk.VBox()
-
-                                self.__widget.pack_start(self.__canvas)
-                                self.__widget.pack_start(self.__toolbar, False, False)
-
-                                self.__haswidget = True
-
-                        return self.__widget
-
-                def fset(self, widget):
-                        self.__widget = widget
-                        self.__haswidget = True
-
-                return locals()
 
         def __plot__(self, x, y, style='-', color=0xFF0000, xlabel=None, ylabel=None):
                 IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
@@ -110,13 +78,13 @@ class MatplotlibBackend(IBackend):
                 self.__subplot.grid(True)
 
         def plotr(self, *args, **kwargs):
-                self.__figure.sca(self.__axr)
+                self.figure.sca(self.__axr)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0x00FF00
                 self.__plot__(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
-                self.__figure.sca(self.__axl)
+                self.figure.sca(self.__axl)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0xFF0000
                 self.__plot__(*args, **kwargs)
@@ -137,51 +105,81 @@ class MatplotlibBackend(IBackend):
                 if filter(lambda x: x != 0, limits):
                         self.__subplot.axis(limits)
 
-                self.__canvas.draw()
+                self.canvas.draw()
 
         def clear(self):
                 self.__subplot.clear()
                 self.__subplot.grid(True)
 
-        def show(self):
-                if not self.__haswidget:
-                        return
-
-                self.__widget.show()
-                self.__canvas.show()
-                self.__toolbar.show()
-
-        def hide(self):
-                if not self.__haswidget:
-                        return
-
-                self.__toolbar.hide()
-                self.__canvas.hide()
-                self.__widget.hide()
-
-        def __image__(self, filename):
-                self.__figure.savefig(filename)
-
         def __init__(self):
                 IBackend.__init__(self)
 
-                self.__figure = Figure()
+                from matplotlib.figure import Figure
+                self.figure = Figure()
 
-                self.__axl = self.__figure.gca()
+                self.__axl = self.figure.gca()
                 self.__axl.yaxis.set_label_position('left')
                 self.__axl.yaxis.tick_left()
 
-                # TODO: self.__axr = self.__figure.add_axes(self.__axl.get_position(), sharex=self.__axl, frameon=False)
+                # TODO: self.__axr = self.figure.add_axes(self.__axl.get_position(), sharex=self.__axl, frameon=False)
                 # TODO: self.__axr.yaxis.set_label_position('right')
                 # TODO: self.__axr.yaxis.tick_right()
 
-                self.__subplot = self.__figure.add_subplot(111)
+                self.__subplot = self.figure.add_subplot(111)
                 self.__subplot.grid(True)
 
-                self.__canvas = FigureCanvas(self.__figure)
-                self.__toolbar = NavigationToolbar(self.__canvas, None)
+class MatplotlibImageBackend(IMatplotlibBackend):
 
-                self.__haswidget = False
+        def render(self, filename):
+                self.figure.savefig(filename)
+
+        def __init__(self):
+                IMatplotlibBackend.__init__(self)
+
+                from matplotlib.backends.backend_cairo \
+                  import FigureCanvasCairo as FigureCanvas
+
+                self.canvas = FigureCanvas(self.figure)
+
+class MatplotlibWindowBackend(IMatplotlibBackend):
+
+        @Property
+        def widget():
+                def fget(self):
+                        self.__widget = gtk.VBox()
+
+                        self.__widget.pack_start(self.canvas)
+                        self.__widget.pack_start(self.toolbar, False, False)
+
+                        return self.__widget
+
+                def fset(self, widget):
+                        self.__widget = widget
+
+                return locals()
+
+        def show(self):
+                self.__widget.show()
+                self.canvas.show()
+                self.toolbar.show()
+
+        def hide(self):
+                self.toolbar.hide()
+                self.canvas.hide()
+                self.__widget.hide()
+
+        def __init__(self):
+                IMatplotlibBackend.__init__(self)
+
+                from matplotlib.backends.backend_gtk \
+                  import FigureCanvasGTK as FigureCanvas
+
+                self.canvas = FigureCanvas(self.figure)
+
+                from matplotlib.backends.backend_gtk \
+                  import NavigationToolbar2GTK as NavigationToolbar
+
+                self.toolbar = NavigationToolbar(self.canvas, None)
 
 ##
 ## Containers...
@@ -246,12 +244,12 @@ class ImageContainer(IContainer):
         def draw(self, *args, **kwargs):
                 IContainer.draw(self, *args, **kwargs)
 
-                self.backend.__image__('foobar.png')
+                self.backend.render('foobar.png')
 
         def __init__(self):
                 IContainer.__init__(self)
 
-                self.backend = MatplotlibBackend()
+                self.backend = MatplotlibImageBackend()
 
 class WindowContainer(IContainer):
 
@@ -368,7 +366,7 @@ class WindowContainer(IContainer):
         def __init__(self, container):
                 IContainer.__init__(self)
 
-                self.backend = MatplotlibBackend()
+                self.backend = MatplotlibWindowBackend()
 
                 gladename = os.environ['GRIMA_ETC'] + '/' + 'grima-plot.xml'
                 self.__widgets = gtk.glade.XML(gladename)
