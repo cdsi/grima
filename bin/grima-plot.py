@@ -32,14 +32,15 @@ def parse(f):
         lines = [l.strip() for l in fd.readlines()]
         fd.close()
 
-        for line in lines:
+        for i, line in enumerate(lines):
                 data = filter(lambda x: x != '', re.split('[, ]', line.strip()))
 
-                x.append(float(data[0]))
                 try:
                         y.append(float(data[1]))
+                        x.append(float(data[0]))
                 except IndexError:
-                        y = []
+                        y.append(float(data[0]))
+                        x.append(i)
 
         return x, y
 
@@ -68,11 +69,8 @@ if __name__ == "__main__":
                 print 'data:', f
                 x, y = parse(f)
 
-                if len(y):
-                        p.plotl(x, y, color=color)
-                        stats(x, y)
-                else:
-                        p.ploth(x, color=color)
+                p.plotl(x, y, color=color)
+                stats(x, y)
 
                 color = int(random.getrandbits(24))
 
