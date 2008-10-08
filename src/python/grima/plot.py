@@ -21,19 +21,29 @@ import gtk.glade
 # our own libraries
 from elrond.util import Object, Property
 
-class IPlot(Object):
+##
+## Backends...
+##
+
+class IBackend(Object):
+        """The IBackend class is the base implementation for any class that can produce plots.
+        e.g. ASCII art or fancy GUI backends like matplotlib.
+        """
+
+        def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
+                self.xandys = zip(map(lambda s: str(s), x), map(lambda s: str(s), y))
 
         def plotr(self, *args, **kwargs):
-                pass
+                self.__plot__(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
-                pass
+                self.__plot__(*args, **kwargs)
 
         def ploth(self, *args, **kwargs):
-                pass
+                self.__plot__(*args, **kwargs)
 
         def plotv(self, *args, **kwargs):
-                pass
+                self.__plot__(*args, **kwargs)
 
         def draw(self, *args, **kwargs):
                 pass
@@ -50,34 +60,46 @@ class IPlot(Object):
         def run(self, *args, **kwargs):
                 pass
 
-        def saveas(self, filename, xandys):
-                f = open(filename, 'w')
-                f.writelines([','.join(xandy) + '\n' for xandy in xandys])
-                f.close()
+        def __image__(self, *args, **kwargs):
+                pass
 
-class Console(IPlot):
+class ConsoleBackend(IBackend):
+        """This is the simplest of backends. This simply prints to the console. This backend
+        must be used within a ConsoleContainer.
+        """
 
-        def __plot(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
-                for i, v in enumerate(x):
+        def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
+                IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
+
+                for i in range(0, len(x)):
                         print 'x,y[%d] = %.4f, %4f' % (i, x[i], y[i])
 
-        def plotr(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+class MatplotlibBackend(IBackend):
+        """This backend uses matplotlib to prodce plots. An ImageContainer or WindowContainer in-turn
+        contains this backed to either render the plot to and image or to a GUI.
+        """
 
-        def plotl(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+        @Property
+        def widget():
+                def fget(self):
+                        if not self.__haswidget:
+                                self.__widget = gtk.VBox()
 
-        def ploth(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                                self.__widget.pack_start(self.__canvas)
+                                self.__widget.pack_start(self.__toolbar, False, False)
 
-        def plotv(self, *args, **kwargs):
-                self.__plot(*args, **kwargs)
+                                self.__haswidget = True
 
-class Backend(Object):
+                        return self.__widget
 
-        def __plot(self, x, y, style='-', color=0xFF0000, xlabel=None, ylabel=None):
-                conv = lambda elem: str(elem)
-                self.xandys = zip(map(conv, x), map(conv, y))
+                def fset(self, widget):
+                        self.__widget = widget
+                        self.__haswidget = True
+
+                return locals()
+
+        def __plot__(self, x, y, style='-', color=0xFF0000, xlabel=None, ylabel=None):
+                IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
 
                 if xlabel != None:
                         self.__subplot.set_xlabel(xlabel)
@@ -91,13 +113,13 @@ class Backend(Object):
                 self.__figure.sca(self.__axr)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0x00FF00
-                self.__plot(*args, **kwargs)
+                self.__plot__(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
                 self.__figure.sca(self.__axl)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0xFF0000
-                self.__plot(*args, **kwargs)
+                self.__plot__(*args, **kwargs)
 
         def ploth(self, y, style='--', color=0xFF0000):
                 self.__subplot.axhline(y, ls=style, color='#%06X' % (color))
@@ -110,7 +132,7 @@ class Backend(Object):
         def draw(self):
                 self.__subplot.axis('auto')
 
-                limits = [self.plot.xmin, self.plot.xmax, self.plot.ymin, self.plot.ymax]
+                limits = [self.props.xmin, self.props.xmax, self.props.ymin, self.props.ymax]
 
                 if filter(lambda x: x != 0, limits):
                         self.__subplot.axis(limits)
@@ -122,17 +144,27 @@ class Backend(Object):
                 self.__subplot.grid(True)
 
         def show(self):
+                if not self.__haswidget:
+                        return
+
+                self.__widget.show()
                 self.__canvas.show()
                 self.__toolbar.show()
-                self.widget.show()
 
         def hide(self):
-                self.widget.hide()
+                if not self.__haswidget:
+                        return
+
                 self.__toolbar.hide()
                 self.__canvas.hide()
+                self.__widget.hide()
+
+        def __image__(self, filename):
+                self.__figure.savefig(filename)
 
         def __init__(self):
-                Object.__init__(self)
+                IBackend.__init__(self)
+
                 self.__figure = Figure()
 
                 self.__axl = self.__figure.gca()
@@ -146,39 +178,102 @@ class Backend(Object):
                 self.__subplot = self.__figure.add_subplot(111)
                 self.__subplot.grid(True)
 
-                self.widget = gtk.VBox()
-
                 self.__canvas = FigureCanvas(self.__figure)
-                self.widget.pack_start(self.__canvas)
-
                 self.__toolbar = NavigationToolbar(self.__canvas, None)
-                self.widget.pack_start(self.__toolbar, False, False)
 
-                self.xandys = []
+                self.__haswidget = False
 
-class Window(IPlot):
+##
+## Containers...
+##
+
+class IContainer(Object):
+        """The IContainer class is the base implementation for any class that contains IBackends.
+        e.g. console wrappers, image only wrappers, or fancy GUI toolkits like GTK+.
+        """
 
         @Property
-        def plot():
+        def props():
                 def fget(self):
-                        return self.__plot
+                        return self.backend.props
 
-                def fset(self, plot):
-                        self.__plot = plot
+                def fset(self, props):
+                        self.backend.props = props
 
-                        self.__backend.plot = self.__plot
+                return locals()
+
+        def plotr(self, *args, **kwargs):
+                self.backend.plotr(*args, **kwargs)
+
+        def plotl(self, *args, **kwargs):
+                self.backend.plotl(*args, **kwargs)
+
+        def ploth(self, *args, **kwargs):
+                self.backend.ploth(*args, **kwargs)
+
+        def plotv(self, *args, **kwargs):
+                self.backend.plotv(*args, **kwargs)
+
+        def draw(self, *args, **kwargs):
+                self.backend.draw(*args, **kwargs)
+
+        def clear(self, *args, **kwargs):
+                self.backend.clear(*args, **kwargs)
+
+        def show(self, *args, **kwargs):
+                self.backend.show(*args, **kwargs)
+
+        def hide(self, *args, **kwargs):
+                self.backend.hide(*args, **kwargs)
+
+        def run(self, *args, **kwargs):
+                self.backend.run(*args, **kwargs)
+
+        def saveas(self, filename):
+                f = open(filename, 'w')
+                f.writelines([','.join(xandy) + '\n' for xandy in self.backend.xandys])
+                f.close()
+
+class ConsoleContainer(IContainer):
+
+        def __init__(self):
+                IContainer.__init__(self)
+
+                self.backend = ConsoleBackend()
+
+class ImageContainer(IContainer):
+
+        def draw(self, *args, **kwargs):
+                IContainer.draw(self, *args, **kwargs)
+
+                self.backend.__image__('foobar.png')
+
+        def __init__(self):
+                IContainer.__init__(self)
+
+                self.backend = MatplotlibBackend()
+
+class WindowContainer(IContainer):
+
+        @Property
+        def props():
+                def fget(self):
+                        return self.backend.props
+
+                def fset(self, props):
+                        self.backend.props = props
 
                         widget = self.__widgets.get_widget('preferences_xmin_entry')
-                        widget.set_text(str(self.__plot.xmin))
+                        widget.set_text(str(self.backend.props.xmin))
 
                         widget = self.__widgets.get_widget('preferences_xmax_entry')
-                        widget.set_text(str(self.__plot.xmax))
+                        widget.set_text(str(self.backend.props.xmax))
 
                         widget = self.__widgets.get_widget('preferences_ymin_entry')
-                        widget.set_text(str(self.__plot.ymin))
+                        widget.set_text(str(self.backend.props.ymin))
 
                         widget = self.__widgets.get_widget('preferences_ymax_entry')
-                        widget.set_text(str(self.__plot.ymax))
+                        widget.set_text(str(self.backend.props.ymax))
 
                 return locals()
 
@@ -197,34 +292,21 @@ class Window(IPlot):
 
                 return locals()
 
-        def plotr(self, *args, **kwargs):
-                self.__backend.plotr(*args, **kwargs)
-
-        def plotl(self, *args, **kwargs):
-                self.__backend.plotl(*args, **kwargs)
-
-        def ploth(self, *args, **kwargs):
-                self.__backend.ploth(*args, **kwargs)
-
-        def plotv(self, *args, **kwargs):
-                self.__backend.plotv(*args, **kwargs)
-
-        def draw(self, *args, **kwargs):
-                self.__backend.draw(*args, **kwargs)
-
         def clear(self, *args, **kwargs):
-                if self.plot.overlay:
+                if self.props.overlay:
                         return
 
-                self.__backend.clear(*args, **kwargs)
+                IContainer.clear(self, *args, **kwargs)
 
-        def show(self):
-                self.__backend.show()
+        def show(self, *args, **kwargs):
+                IContainer.show(self, *args, **kwargs)
+
                 self.__container.show()
 
-        def hide(self):
+        def hide(self, *args, **kwargs):
+                IContainer.hide(self, *args, **kwargs)
+
                 self.__container.hide()
-                self.__backend.hide()
 
         def run(self):
                 gtk.main()
@@ -236,7 +318,7 @@ class Window(IPlot):
                 if not filename:
                         return
 
-                self.saveas(filename, self.__backend.xandys)
+                self.saveas(filename, self.backend.xandys)
 
         def on_saveas_cancel_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
@@ -253,16 +335,16 @@ class Window(IPlot):
                 self.__preferences.hide()
 
                 widget = self.__widgets.get_widget('preferences_xmin_entry')
-                self.plot.xmin = float(widget.get_text())
+                self.props.xmin = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_xmax_entry')
-                self.plot.xmax = float(widget.get_text())
+                self.props.xmax = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_ymin_entry')
-                self.plot.ymin = float(widget.get_text())
+                self.props.ymin = float(widget.get_text())
 
                 widget = self.__widgets.get_widget('preferences_ymax_entry')
-                self.plot.ymax = float(widget.get_text())
+                self.props.ymax = float(widget.get_text())
 
                 self.draw()
 
@@ -278,13 +360,15 @@ class Window(IPlot):
                 return True
 
         def on_plot_overlay_button_toggled(self, widget, data=None):
-                self.plot.overlay = widget.get_active()
+                self.props.overlay = widget.get_active()
 
         def on_plot_window_destroy(self, widget, data=None):
                 gtk.main_quit()
 
         def __init__(self, container):
-                self.__backend = Backend()
+                IContainer.__init__(self)
+
+                self.backend = MatplotlibBackend()
 
                 gladename = os.environ['GRIMA_ETC'] + '/' + 'grima-plot.xml'
                 self.__widgets = gtk.glade.XML(gladename)
@@ -308,24 +392,30 @@ class Window(IPlot):
                         self.__container.set_default_size(700, 500)
 
                 widget = self.__widgets.get_widget('plot_backend')
-                widget.add(self.__backend.widget)
+                widget.add(self.backend.widget)
+
+##
+## This is the public API...
+##
 
 class Plot(Object):
 
         def __create_display(self):
-                if not self.enabled:
+                if not self.__enabled:
                         return
 
                 if self.type == 'console':
-                        self.__display = Console()
+                        self.__display = ConsoleContainer()
+                if self.type == 'image':
+                        self.__display = ImageContainer()
                 if self.type == 'window':
-                        self.__display = Window(self.container)
+                        self.__display = WindowContainer(self.container)
 
                 try:
-                        self.__display.plot = self
+                        self.__display.props = self
                         self.__display.title = self.title
                 except:
-                        self.enabled = False
+                        self.__enabled = False
 
         @Property
         def enabled():
@@ -412,6 +502,12 @@ class Plot(Object):
                         return
 
                 self.__display.run(*args, **kwargs)
+
+        def saveas(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.saveas(*args, **kwargs)
 
         def __init__(self):
                 Object.__init__(self)
