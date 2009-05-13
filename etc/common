@@ -57,8 +57,8 @@ grima_record()
 
 grima_recorde()
 {
-        record  "$1"
-        echo    "$1"
+        grima_record    "$1"
+        echo            "$1"
 }
 
 # native
