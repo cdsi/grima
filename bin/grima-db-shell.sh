@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec ${SVN} ${SVNFLAGS} "$@"
+sqlite3 -init ${GRIMA_ETC}/grima-db-shell.sql ${GRIMA_DB}/grima.db

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common
@@ -9,8 +9,8 @@ for x in ${GRIMA_EXTRAS}; do
 done
 
 if [ -x ${GRIMA_HOME}/test-local.sh ]; then
-        ${GRIMA_HOME}/test-local.sh
-        [ $? != 0 ] && echo "ERROR!!!" && exit 1
+	${GRIMA_HOME}/test-local.sh
+	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 
 EVERYTHING=1
@@ -43,14 +43,14 @@ if [ "${EVERYTHING}" = "1" ] || [ "${BACKENDS}" = "1" ]; then
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_PYTHON}" = "1" ]; then
-        python.sh setup.py test
+	python.sh setup.py test
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_JAVA}" = "1" ]; then
-        if [ -f build.xml ]; then
-                ant.sh test
-                [ $? != 0 ] && echo "ERROR!!!" && exit 1
-        fi
+	if [ -f build.xml ]; then
+		ant.sh test
+		[ $? != 0 ] && echo "ERROR!!!" && exit 1
+	fi
 fi
 
 exit 0
