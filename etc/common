@@ -22,6 +22,9 @@ export GRIMA_SRC
 GRIMA_VAR="${GRIMA_HOME}"/var
 export GRIMA_VAR
 
+GRIMA_ARCHIVE="${GRIMA_VAR}"/archive
+export GRIMA_ARCHIVE
+
 GRIMA_DATA="${GRIMA_VAR}"/data
 export GRIMA_DATA
 
@@ -46,13 +49,13 @@ export GRIMA_CONFIGUREFLAGS
 GRIMA_LOGFILE="${GRIMA_LOG}"/grima.log
 export GRIMA_LOGFILE
 
-function record
+grima_record()
 {
         date            >> "${GRIMA_LOGFILE}"
         echo "$1"       >> "${GRIMA_LOGFILE}"
 }
 
-function recorde
+grima_recorde()
 {
         record  "$1"
         echo    "$1"
@@ -250,7 +253,7 @@ export JSVCFLAGS
 # extras
 
 GRIMA_EXTRAS=" \
-        Elrond                          \
+        Elrond                  \
 "
 
 for x in ${GRIMA_EXTRAS}; do

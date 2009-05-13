@@ -7,12 +7,11 @@ echo -n "Delete the database? [y/N] "
 read answer
 case "${answer}" in
 	[yY]*)
-		echo "Deleting: ${GRIMA_DB}"
-		rm -f "${GRIMA_DB}"/*
+                grima-db-delete.sh
 	;;
 esac
 
-grima-db-load.sh > ${GRIMA_LOG}/db.log 2>&1
-[ $? != 0 ] && grep 'ERROR!!!' ${GRIMA_LOG}/db.log && exit 1
+grima-db-load.sh
+[ $? != 0 ] && exit 1
 
 exit 0
