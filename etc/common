@@ -249,7 +249,7 @@ export JSVCFLAGS
 
 # extras
 
-GRIMA_EXTRAS="                          \
+GRIMA_EXTRAS=" \
         Elrond                          \
 "
 
