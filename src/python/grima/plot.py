@@ -348,25 +348,38 @@ class WindowContainer(IContainer):
         def run(self):
                 gtk.main()
 
+        def on_plot_open_button_clicked(self, widget, data=None):
+                pass
+
+        def on_plot_save_button_clicked(self, widget, data=None):
+                if not self.filename:
+                        self.on_plot_saveas_button_clicked(self, None)
+
+                if self.filename:
+                        self.saveas(self.filename)
+
         def on_saveas_ok_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
 
                 filename = self.__saveas.get_filename()
                 if not filename:
                         return
+                self.__saveas.set_filename(filename)
 
-                self.saveas(filename)
+                self.filename = filename
+
+                self.on_plot_save_button_clicked(self, None)
 
         def on_saveas_cancel_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
 
-        def on_plot_saveas_button_clicked(self, widget, data=None):
-                self.__saveas = self.__builder.get_object('saveas_chooser')
-                self.__saveas.show()
-
         def on_saveas_chooser_delete_event(self, widget, data=None):
                 self.__saveas.hide()
                 return True
+
+        def on_plot_saveas_button_clicked(self, widget, data=None):
+                self.__saveas = self.__builder.get_object('saveas_chooser')
+                self.__saveas.show()
 
         def on_preferences_ok_button_clicked(self, widget, data=None):
                 self.__preferences.hide()
@@ -427,6 +440,9 @@ class WindowContainer(IContainer):
 
                 widget = self.__builder.get_object('plot_backend')
                 widget.add(self.backend.widget)
+
+                # TODO:
+                self.filename = None
 
 ##
 ## This is the public API...
