@@ -6,6 +6,15 @@ from optparse import OptionParser
 
 from grima.plot import Plot
 
+def plotfile(p, filename):
+        with open(filename, 'r') as f:
+                storage = json.load(f)
+                print 'File: %s' % (filename)
+                print 'Timestamp: %s' % (storage['timestamp'])
+                for data in storage['data']:
+                        p.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
+                                style=data['style'], color=data['color'])
+
 if __name__ == "__main__":
 
         op = OptionParser('%prog [options] data1 data2 data3 ...')
@@ -17,23 +26,20 @@ if __name__ == "__main__":
 
         (options, args) = op.parse_args()
 
-        p = Plot()
+        plot = Plot()
 
-        p.type = options.type
-        p.title = options.title
+        plot.type = options.type
+        plot.title = options.title
 
-        p.enabled = True
-        p.overlay = True
+        plot.enabled = True
+        plot.overlay = True
 
         for filename in args:
-                with open(filename, 'r') as f:
-                        for data in json.load(f):
-                                p.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
-                                        style=data['style'], color=data['color'])
+                plotfile(plot, filename)
 
-        p.show()
-        p.draw()
-        p.run()
+        plot.show()
+        plot.draw()
+        plot.run()
 
 # Local Variables:
 # indent-tabs-mode: nil

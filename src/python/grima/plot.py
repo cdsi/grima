@@ -37,11 +37,16 @@ class IBackend(Object):
                 print " ymax =", ymax
                 print " xmax =", x[y.index(ymax)]
 
+        def saveas(self, filename):
+                self.__storage['timestamp'] = time.ctime(time.time())
+
+                with open(filename, 'w') as f:
+                        json.dump(self.__storage, f, indent=8)
+
         def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
                 self.stats(x, y)
 
                 data = {
-                        'time': time.ctime(time.time()),
                         'xlabel': xlabel,
                         'x': x,
                         'ylabel': ylabel,
@@ -50,7 +55,7 @@ class IBackend(Object):
                         'color': color,
                 }
 
-                self.data.append(data)
+                self.__storage['data'].append(data)
 
         def plotr(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
@@ -82,7 +87,9 @@ class IBackend(Object):
         def __init__(self):
                 Object.__init__(self)
 
-                self.data = []
+                self.__storage = {
+                        'data': []
+                }
 
 class ConsoleBackend(IBackend):
         """This is the simplest of backends. This simply prints to the console. This backend
@@ -261,10 +268,8 @@ class IContainer(Object):
         def run(self, *args, **kwargs):
                 self.backend.run(*args, **kwargs)
 
-        def saveas(self, filename, data):
-                f = open(filename, 'w')
-                json.dump(data, f, indent=8)
-                f.close()
+        def saveas(self, filename):
+                self.backend.saveas(filename)
 
 class ConsoleContainer(IContainer):
 
@@ -350,7 +355,7 @@ class WindowContainer(IContainer):
                 if not filename:
                         return
 
-                self.saveas(filename, self.backend.data)
+                self.saveas(filename)
 
         def on_saveas_cancel_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
