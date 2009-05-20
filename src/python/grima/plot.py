@@ -1,8 +1,11 @@
 # standard python libraries
+import json
 import os
+import time
 
 # matplotlib.sf.net
 import matplotlib
+import numpy
 
 # www.gtk.org
 import gtk
@@ -20,8 +23,35 @@ class IBackend(Object):
         e.g. ASCII art or fancy GUI backends like matplotlib.
         """
 
+        # TODO:
+        def stats(self, x, y):
+                print "  len =", len(y)
+                print " mean =", numpy.mean(y)
+                print "  sum =", sum(y)
+                print "  std =", numpy.std(y)
+
+                ymin = numpy.min(y)
+                print " ymin =", ymin
+                print " xmin =", x[y.index(ymin)]
+
+                ymax = numpy.max(y)
+                print " ymax =", ymax
+                print " xmax =", x[y.index(ymax)]
+
         def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
-                self.xandys = zip(map(lambda s: str(s), x), map(lambda s: str(s), y))
+                data = {
+                        'time': time.ctime(time.time()),
+                        'xlabel': xlabel,
+                        'x': x,
+                        'ylabel': ylabel,
+                        'y': y,
+                        'style': style,
+                        'color': color,
+                }
+
+                self.data.append(data)
+
+                self.stats(x, y)
 
         def plotr(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
@@ -49,6 +79,11 @@ class IBackend(Object):
 
         def run(self, *args, **kwargs):
                 pass
+
+        def __init__(self):
+                Object.__init__(self)
+
+                self.data = []
 
 class ConsoleBackend(IBackend):
         """This is the simplest of backends. This simply prints to the console. This backend
@@ -227,9 +262,9 @@ class IContainer(Object):
         def run(self, *args, **kwargs):
                 self.backend.run(*args, **kwargs)
 
-        def saveas(self, filename):
+        def saveas(self, filename, data):
                 f = open(filename, 'w')
-                f.writelines([','.join(xandy) + '\n' for xandy in self.backend.xandys])
+                json.dump(data, f, indent=8)
                 f.close()
 
 class ConsoleContainer(IContainer):
@@ -316,7 +351,7 @@ class WindowContainer(IContainer):
                 if not filename:
                         return
 
-                self.saveas(filename, self.backend.xandys)
+                self.saveas(filename, self.backend.data)
 
         def on_saveas_cancel_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
