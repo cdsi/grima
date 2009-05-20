@@ -50,18 +50,18 @@ class IBackend(Object):
 
         # TODO:
         def stats(self, x, y):
-                print "  len =", len(y)
-                print " mean =", numpy.mean(y)
-                print "  sum =", sum(y)
-                print "  std =", numpy.std(y)
+                print '  len =', len(y)
+                print ' mean =', numpy.mean(y)
+                print '  sum =', sum(y)
+                print '  std =', numpy.std(y)
 
                 ymin = numpy.min(y)
-                print " ymin =", ymin
-                print " xmin =", x[y.index(ymin)]
+                print ' ymin =', ymin
+                print ' xmin =', x[y.index(ymin)]
 
                 ymax = numpy.max(y)
-                print " ymax =", ymax
-                print " xmax =", x[y.index(ymax)]
+                print ' ymax =', ymax
+                print ' xmax =', x[y.index(ymax)]
 
         def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
                 self.stats(x, y)
