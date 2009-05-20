@@ -13,7 +13,7 @@ def plotfile(p, filename):
                 print 'Timestamp: %s' % (storage['timestamp'])
                 for data in storage['data']:
                         p.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
-                                style=data['style'], color=data['color'])
+                                style=data['style'], color=int(data['color'], 0))
 
 if __name__ == "__main__":
 

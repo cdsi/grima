@@ -52,7 +52,7 @@ class IBackend(Object):
                         'ylabel': ylabel,
                         'y': y,
                         'style': style,
-                        'color': color,
+                        'color': '0x%06X' % (color)
                 }
 
                 self.__storage['data'].append(data)
