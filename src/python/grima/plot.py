@@ -39,6 +39,8 @@ class IBackend(Object):
                 print " xmax =", x[y.index(ymax)]
 
         def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
+                self.stats(x, y)
+
                 data = {
                         'time': time.ctime(time.time()),
                         'xlabel': xlabel,
@@ -50,8 +52,6 @@ class IBackend(Object):
                 }
 
                 self.data.append(data)
-
-                self.stats(x, y)
 
         def plotr(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
