@@ -9,7 +9,6 @@ import numpy
 
 # www.gtk.org
 import gtk
-import gtk.glade
 
 # our own libraries
 from elrond.util import Object, Property
@@ -296,16 +295,16 @@ class WindowContainer(IContainer):
                 def fset(self, props):
                         self.backend.props = props
 
-                        widget = self.__widgets.get_widget('preferences_xmin_entry')
+                        widget = self.__builder.get_object('preferences_xmin_entry')
                         widget.set_text(str(self.backend.props.xmin))
 
-                        widget = self.__widgets.get_widget('preferences_xmax_entry')
+                        widget = self.__builder.get_object('preferences_xmax_entry')
                         widget.set_text(str(self.backend.props.xmax))
 
-                        widget = self.__widgets.get_widget('preferences_ymin_entry')
+                        widget = self.__builder.get_object('preferences_ymin_entry')
                         widget.set_text(str(self.backend.props.ymin))
 
-                        widget = self.__widgets.get_widget('preferences_ymax_entry')
+                        widget = self.__builder.get_object('preferences_ymax_entry')
                         widget.set_text(str(self.backend.props.ymax))
 
                 return locals()
@@ -357,7 +356,7 @@ class WindowContainer(IContainer):
                 self.__saveas.hide()
 
         def on_plot_saveas_button_clicked(self, widget, data=None):
-                self.__saveas = self.__widgets.get_widget('saveas_chooser')
+                self.__saveas = self.__builder.get_object('saveas_chooser')
                 self.__saveas.show()
 
         def on_saveas_chooser_delete_event(self, widget, data=None):
@@ -367,16 +366,16 @@ class WindowContainer(IContainer):
         def on_preferences_ok_button_clicked(self, widget, data=None):
                 self.__preferences.hide()
 
-                widget = self.__widgets.get_widget('preferences_xmin_entry')
+                widget = self.__builder.get_object('preferences_xmin_entry')
                 self.props.xmin = float(widget.get_text())
 
-                widget = self.__widgets.get_widget('preferences_xmax_entry')
+                widget = self.__builder.get_object('preferences_xmax_entry')
                 self.props.xmax = float(widget.get_text())
 
-                widget = self.__widgets.get_widget('preferences_ymin_entry')
+                widget = self.__builder.get_object('preferences_ymin_entry')
                 self.props.ymin = float(widget.get_text())
 
-                widget = self.__widgets.get_widget('preferences_ymax_entry')
+                widget = self.__builder.get_object('preferences_ymax_entry')
                 self.props.ymax = float(widget.get_text())
 
                 self.draw()
@@ -385,7 +384,7 @@ class WindowContainer(IContainer):
                 self.__preferences.hide()
 
         def on_plot_preferences_button_clicked(self, widget, data=None):
-                self.__preferences = self.__widgets.get_widget('preferences_dialog')
+                self.__preferences = self.__builder.get_object('preferences_dialog')
                 self.__preferences.show()
 
         def on_preferences_dialog_delete_event(self, widget, data=None):
@@ -403,28 +402,25 @@ class WindowContainer(IContainer):
 
                 self.backend = MatplotlibWindowBackend()
 
-                gladename = os.environ['GRIMA_ETC'] + '/' + 'grima-plot.xml'
-                self.__widgets = gtk.glade.XML(gladename)
-
-                map = {}
-                for key in filter(lambda x: x.startswith('on_'), dir(self.__class__)):
-                        map[key] = getattr(self, key)
-                self.__widgets.signal_autoconnect(map)
+                buildername = os.environ['GRIMA_ETC'] + os.sep + 'grima-plot.ui'
+                self.__builder = gtk.Builder()
+                self.__builder.add_from_file(buildername)
+                self.__builder.connect_signals(self)
 
                 if container:
                         self.__container = container
-                        widget = self.__widgets.get_widget('plot_embeddable')
-                        container = self.__widgets.get_widget('plot_container')
+                        widget = self.__builder.get_object('plot_embeddable')
+                        container = self.__builder.get_object('plot_container')
                         container.remove(widget)
                         self.__container.add(widget)
                 else:
-                        self.__container = self.__widgets.get_widget('plot_window')
+                        self.__container = self.__builder.get_object('plot_window')
 
                         # TODO: this should not be needed, but somehow the widget show'ing order
                         # is all screwed up and the window doesn't display correctly without this
                         self.__container.set_default_size(700, 500)
 
-                widget = self.__widgets.get_widget('plot_backend')
+                widget = self.__builder.get_object('plot_backend')
                 widget.add(self.backend.widget)
 
 ##
