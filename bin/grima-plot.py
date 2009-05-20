@@ -1,19 +1,8 @@
 #!/usr/bin/env python
 
-import json
-
 from optparse import OptionParser
 
 from grima.plot import Plot
-
-def plotfile(p, filename):
-        with open(filename, 'r') as f:
-                storage = json.load(f)
-                print 'File: %s' % (filename)
-                print 'Timestamp: %s' % (storage['timestamp'])
-                for data in storage['data']:
-                        p.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
-                                style=data['style'], color=int(data['color'], 0))
 
 if __name__ == "__main__":
 
@@ -35,7 +24,7 @@ if __name__ == "__main__":
         plot.overlay = True
 
         for filename in args:
-                plotfile(plot, filename)
+                plot.open(filename)
 
         plot.show()
         plot.draw()

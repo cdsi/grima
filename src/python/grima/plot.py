@@ -22,6 +22,32 @@ class IBackend(Object):
         e.g. ASCII art or fancy GUI backends like matplotlib.
         """
 
+        def open(self, filename):
+                self.clear()
+
+                with open(filename, 'r') as f:
+                        storage = json.load(f)
+
+                        print 'File: %s' % (filename)
+                        print 'Timestamp: %s' % (storage['timestamp'])
+
+                        for data in storage['data']:
+                                self.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
+                                           style=data['style'], color=int(data['color'], 0))
+
+                self.draw()
+
+                if not self.props.overlay:
+                        self.__storage['data'] = []
+
+                self.__storage['data'].extend(storage['data'])
+
+        def save(self, filename):
+                self.__storage['timestamp'] = time.ctime(time.time())
+
+                with open(filename, 'w') as f:
+                        json.dump(self.__storage, f, indent=8)
+
         # TODO:
         def stats(self, x, y):
                 print "  len =", len(y)
@@ -37,12 +63,6 @@ class IBackend(Object):
                 print " ymax =", ymax
                 print " xmax =", x[y.index(ymax)]
 
-        def saveas(self, filename):
-                self.__storage['timestamp'] = time.ctime(time.time())
-
-                with open(filename, 'w') as f:
-                        json.dump(self.__storage, f, indent=8)
-
         def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
                 self.stats(x, y)
 
@@ -54,6 +74,9 @@ class IBackend(Object):
                         'style': style,
                         'color': '0x%06X' % (color)
                 }
+
+                if not self.props.overlay:
+                        self.__storage['data'] = []
 
                 self.__storage['data'].append(data)
 
@@ -149,6 +172,9 @@ class IMatplotlibBackend(IBackend):
                 self.canvas.draw()
 
         def clear(self):
+                if self.props.overlay:
+                        return
+
                 self.__subplot.clear()
                 self.__subplot.grid(True)
 
@@ -268,8 +294,11 @@ class IContainer(Object):
         def run(self, *args, **kwargs):
                 self.backend.run(*args, **kwargs)
 
-        def saveas(self, filename):
-                self.backend.saveas(filename)
+        def open(self, filename):
+                self.backend.open(filename)
+
+        def save(self, filename):
+                self.backend.save(filename)
 
 class ConsoleContainer(IContainer):
 
@@ -330,9 +359,6 @@ class WindowContainer(IContainer):
                 return locals()
 
         def clear(self, *args, **kwargs):
-                if self.props.overlay:
-                        return
-
                 IContainer.clear(self, *args, **kwargs)
 
         def show(self, *args, **kwargs):
@@ -348,15 +374,33 @@ class WindowContainer(IContainer):
         def run(self):
                 gtk.main()
 
+        def on_open_ok_button_clicked(self, widget, data=None):
+                self.__open.hide()
+
+                filename = self.__open.get_filename()
+                if not filename:
+                        return
+                self.__open.set_filename(filename)
+
+                self.open(filename)
+
+        def on_open_cancel_button_clicked(self, widget, data=None):
+                self.__open.hide()
+
+        def on_open_chooser_delete_event(self, widget, data=None):
+                self.__open.hide()
+                return True
+
         def on_plot_open_button_clicked(self, widget, data=None):
-                pass
+                self.__open = self.__builder.get_object('open_chooser')
+                self.__open.show()
 
         def on_plot_save_button_clicked(self, widget, data=None):
                 if not self.filename:
                         self.on_plot_saveas_button_clicked(self, None)
 
                 if self.filename:
-                        self.saveas(self.filename)
+                        self.save(self.filename)
 
         def on_saveas_ok_button_clicked(self, widget, data=None):
                 self.__saveas.hide()
@@ -553,11 +597,17 @@ class Plot(Object):
 
                 self.__display.run(*args, **kwargs)
 
-        def saveas(self, *args, **kwargs):
+        def open(self, *args, **kwargs):
                 if not self.enabled:
                         return
 
-                self.__display.saveas(*args, **kwargs)
+                self.__display.open(*args, **kwargs)
+
+        def save(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.save(*args, **kwargs)
 
         def __init__(self):
                 Object.__init__(self)
