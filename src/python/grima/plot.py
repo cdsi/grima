@@ -1,5 +1,11 @@
+from __future__ import with_statement
+
 # standard python libraries
-import json
+try:
+        import json
+except:
+        import simplejson as json
+
 import os
 import time
 
