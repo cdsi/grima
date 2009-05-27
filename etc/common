@@ -168,7 +168,7 @@ export NETBEANSFLAGS
 PATH=${NETBEANS_HOME}/bin:${PATH}
 export PATH
 
-CLASSPATH=
+# CLASSPATH=
 
 for x in ${GRIMA_HOME}/dist/*.jar ${GRIMA_HOME}/lib/java/*.jar; do
         CLASSPATH="${x}:${CLASSPATH}"
