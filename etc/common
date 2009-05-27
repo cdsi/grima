@@ -174,7 +174,7 @@ for x in ${GRIMA_HOME}/dist/*.jar ${GRIMA_HOME}/lib/java/*.jar; do
         CLASSPATH="${x}:${CLASSPATH}"
 done
 
-for x in ${EXTRAS}; do
+for x in ${GRIMA_DEPENDS}; do
         for y in /opt/${x}/lib/*.jar; do
                 CLASSPATH="${y}:${CLASSPATH}"
         done
