@@ -6,6 +6,7 @@ try:
 except:
         import simplejson as json
 
+import re
 import os
 import time
 
@@ -17,7 +18,28 @@ import numpy
 import gtk
 
 # our own libraries
+from elrond.macros import clamp
 from elrond.util import Object, Property
+
+def parse(f):
+        x = []
+        y = []
+
+        fd = open(f, 'r')
+        lines = [l.strip() for l in fd.readlines()]
+        fd.close()
+
+        for i, line in enumerate(lines):
+                data = filter(lambda x: x != '', re.split('[, ]', line.strip()))
+
+                try:
+                        y.append(float(data[1]))
+                        x.append(float(data[0]))
+                except IndexError:
+                        y.append(float(data[0]))
+                        x.append(i)
+
+        return x, y
 
 ##
 ## Backends...
@@ -27,6 +49,34 @@ class IBackend(Object):
         """The IBackend class is the base implementation for any class that can produce plots.
         e.g. ASCII art or fancy GUI backends like matplotlib.
         """
+
+        def stripchart(self, filename):
+                x_list, y_list = parse(filename)
+
+                self.clear()
+
+                self.props.ymin = 0
+                self.props.ymax = 100
+
+                step = 100
+
+                x_first = x_list[0: clamp(step, u=len(x_list))]
+                y_first = y_list[0: clamp(step, u=len(y_list))]
+
+                self.props.xmin = 0
+                self.props.xmax = len(x_first)
+
+                for i in range(0, len(x_first)):
+                        self.plotl(x_first[0:i + 1], y_first[0:i + 1])
+                        self.draw()
+
+                self.plotl(x_list, y_list)
+
+                for i in range(0, len(x_list)):
+                        self.props.xmin = i + 1
+                        self.props.xmax = i + 1 + step
+
+                        self.draw()
 
         def open(self, filename):
                 self.clear()
@@ -299,6 +349,9 @@ class IContainer(Object):
 
         def run(self, *args, **kwargs):
                 self.backend.run(*args, **kwargs)
+
+        def stripchart(self, filename):
+                self.backend.stripchart(filename)
 
         def open(self, filename):
                 self.backend.open(filename)
@@ -602,6 +655,12 @@ class Plot(Object):
                         return
 
                 self.__display.run(*args, **kwargs)
+
+        def stripchart(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.stripchart(*args, **kwargs)
 
         def open(self, *args, **kwargs):
                 if not self.enabled:

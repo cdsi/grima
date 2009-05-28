@@ -21,13 +21,13 @@ if __name__ == "__main__":
         plot.title = options.title
 
         plot.enabled = True
-        plot.overlay = True
+        plot.overlay = False
 
         plot.show()
         plot.draw()
 
         for filename in args:
-                plot.open(filename)
+                plot.stripchart(filename)
 
         plot.run()
 
