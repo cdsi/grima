@@ -258,9 +258,9 @@ class IMatplotlibBackend(IBackend):
                 self.__axl.yaxis.set_label_position('left')
                 self.__axl.yaxis.tick_left()
 
-                # TODO: self.__axr = self.figure.add_axes(self.__axl.get_position(), sharex=self.__axl, frameon=False)
-                # TODO: self.__axr.yaxis.set_label_position('right')
-                # TODO: self.__axr.yaxis.tick_right()
+                self.__axr = self.__axl.twinx()
+                self.__axr.yaxis.set_label_position('right')
+                self.__axr.yaxis.tick_right()
 
                 self.__subplots = []
                 self.subplot_new()
