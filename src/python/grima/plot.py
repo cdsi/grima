@@ -81,6 +81,11 @@ class IBackend(Object):
         def open(self, filename):
                 self.clear()
 
+                if self.subplotkludge:
+                        self.subplot_new()
+
+                self.subplotkludge = True
+
                 with open(filename, 'r') as f:
                         storage = json.load(f)
 
@@ -97,8 +102,6 @@ class IBackend(Object):
                         self.__storage['data'] = []
 
                 self.__storage['data'].extend(storage['data'])
-
-                self.subplot_new()
 
         def save(self, filename):
                 self.__storage['timestamp'] = time.ctime(time.time())
@@ -239,20 +242,14 @@ class IMatplotlibBackend(IBackend):
         def subplot_new(self):
                 nsubplots = len(self.__subplots) + 1
 
-                for i, subplot in enumerate(self.__subplots):
-                        subplot.change_geometry(nsubplots, 1, i + 1)
-
                 subplot = self.figure.add_subplot(nsubplots, 1, nsubplots)
                 subplot.grid(True)
 
                 self.__subplots.append(subplot)
                 self.__subplot = subplot
 
-        def __init__(self):
-                IBackend.__init__(self)
-
-                from matplotlib.figure import Figure
-                self.figure = Figure()
+                for i, subplot in enumerate(self.__subplots):
+                        subplot.change_geometry(nsubplots, 1, i + 1)
 
                 self.__axl = self.figure.gca()
                 self.__axl.yaxis.set_label_position('left')
@@ -262,8 +259,16 @@ class IMatplotlibBackend(IBackend):
                 self.__axr.yaxis.set_label_position('right')
                 self.__axr.yaxis.tick_right()
 
+        def __init__(self):
+                IBackend.__init__(self)
+
+                from matplotlib.figure import Figure
+                self.figure = Figure()
+
                 self.__subplots = []
                 self.subplot_new()
+
+                self.subplotkludge = False
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
