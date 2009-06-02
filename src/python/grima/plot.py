@@ -98,6 +98,8 @@ class IBackend(Object):
 
                 self.__storage['data'].extend(storage['data'])
 
+                self.subplot_new()
+
         def save(self, filename):
                 self.__storage['timestamp'] = time.ctime(time.time())
 
@@ -234,6 +236,18 @@ class IMatplotlibBackend(IBackend):
                 self.__subplot.clear()
                 self.__subplot.grid(True)
 
+        def subplot_new(self):
+                nsubplots = len(self.__subplots) + 1
+
+                for i, subplot in enumerate(self.__subplots):
+                        subplot.change_geometry(nsubplots, 1, i + 1)
+
+                subplot = self.figure.add_subplot(nsubplots, 1, nsubplots)
+                subplot.grid(True)
+
+                self.__subplots.append(subplot)
+                self.__subplot = subplot
+
         def __init__(self):
                 IBackend.__init__(self)
 
@@ -248,8 +262,8 @@ class IMatplotlibBackend(IBackend):
                 # TODO: self.__axr.yaxis.set_label_position('right')
                 # TODO: self.__axr.yaxis.tick_right()
 
-                self.__subplot = self.figure.add_subplot(111)
-                self.__subplot.grid(True)
+                self.__subplots = []
+                self.subplot_new()
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
