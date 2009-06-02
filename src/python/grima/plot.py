@@ -251,14 +251,6 @@ class IMatplotlibBackend(IBackend):
                 for i, subplot in enumerate(self.__subplots):
                         subplot.change_geometry(nsubplots, 1, i + 1)
 
-                self.__axl = self.figure.gca()
-                self.__axl.yaxis.set_label_position('left')
-                self.__axl.yaxis.tick_left()
-
-                self.__axr = self.__axl.twinx()
-                self.__axr.yaxis.set_label_position('right')
-                self.__axr.yaxis.tick_right()
-
         def __init__(self):
                 IBackend.__init__(self)
 
@@ -269,6 +261,14 @@ class IMatplotlibBackend(IBackend):
                 self.subplot_new()
 
                 self.subplotkludge = False
+
+                self.__axl = self.figure.gca()
+                self.__axl.yaxis.set_label_position('left')
+                self.__axl.yaxis.tick_left()
+
+                self.__axr = self.__axl.twinx()
+                self.__axr.yaxis.set_label_position('right')
+                self.__axr.yaxis.tick_right()
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
