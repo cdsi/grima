@@ -58,11 +58,6 @@ grima_recorde()
         echo            "$1"
 }
 
-# depends
-
-DEPENDS_HOME="${GRIMA_SHARE}"
-. "${DEPENDS_HOME}"/depends
-
 # native
 
 PATH="${GRIMA_BIN}":"${PATH}"
@@ -74,10 +69,17 @@ export LD_LIBRARY_PATH
 PYTHONPATH=${GRIMA_LIB}:${GRIMA_LIB}/python:${PYTHONPATH}
 export PYTHONPATH
 
+# depends
+
+DEPENDS_HOME="${GRIMA_SHARE}"
+. "${DEPENDS_HOME}"/depends
+
+# grima
+
 GRIMA_ACLOCALFLAGS="${ACLOCALFLAGS} -I ${DEPENDS_HOME}/aclocal"
 export GRIMA_ACLOCALFLAGS
 
-GRIMA_CLASSPATH=
+GRIMA_CLASSPATH=${CLASSPATH}
 
 for x in ${GRIMA_HOME}/dist/*.jar ${GRIMA_HOME}/lib/java/*.jar; do
         GRIMA_CLASSPATH="${x}:${GRIMA_CLASSPATH}"
@@ -97,7 +99,7 @@ done
 
 export GRIMA_CLASSPATH
 
-GRIMA_JAVAFLAGS="${JAVAFLAGS} -Dgrima.home=${GRIMA_HOME} -cp ${GANANDALF_CLASSPATH} \
+GRIMA_JAVAFLAGS="${JAVAFLAGS} -Dgrima.home=${GRIMA_HOME} -cp ${GRIMA_CLASSPATH} \
 	-Djava.util.logging.config.file=${GRIMA_ETC}/grima.properties"
 export GRIMA_JAVAFLAGS
 
