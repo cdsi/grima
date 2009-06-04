@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec ${JAVA} ${JAVAFLAGS} "$@"
+exec ${JAVA} ${JAVAFLAGS} ${GRIMA_JAVAFLAGS} "$@"
