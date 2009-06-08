@@ -35,16 +35,16 @@ cd ${GRIMA_HOME}
 
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_JAVA}" = "1" ]; then
 	if [ -f build.xml ]; then
-		ant.sh clean
+		${GRIMA_BIN}/ant.sh clean
 		[ $? != 0 ] && echo "ERROR!!!" && exit 1
 	fi
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_PYTHON}" = "1" ]; then
-	python.sh setup.py clean
+	${GRIMA_BIN}/python.sh setup.py clean
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${BACKENDS}" = "1" ]; then
-	make.sh -k uninstall distclean
+	${GRIMA_BIN}/make.sh -k uninstall distclean
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 

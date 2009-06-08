@@ -54,7 +54,7 @@ grima_record()
 
 grima_recorde()
 {
-        grima_record            "$@"
+        grima_record        "$@"
         echo                    "$@"
 }
 
@@ -105,6 +105,9 @@ export GRIMA_CLASSPATH
 GRIMA_JAVAFLAGS="${JAVAFLAGS} -Dgrima.home=${GRIMA_HOME} -cp ${GRIMA_CLASSPATH} \
 	-Djava.util.logging.config.file=${GRIMA_ETC}/grima.properties"
 export GRIMA_JAVAFLAGS
+
+GRIMA_ANTFLAGS=
+export GRIMA_ANTFLAGS
 
 # extras
 
