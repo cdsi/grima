@@ -5,4 +5,5 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec ${PYTHON} ${PYTHONFLAGS} "$@"
+grima_record ${PYTHON} ${PYTHONFLAGS} ${GRIMA_PYTHONFLAGS} "$@"
+exec ${PYTHON} ${PYTHONFLAGS} ${GRIMA_PYTHONFLAGS} "$@"

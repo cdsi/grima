@@ -12,5 +12,5 @@ if [ "${ARCHIVE}" = "" ]; then
 	exit 1
 fi
 
-sqlite3 -init ${GRIMA_ETC}/grima-db-restore.sql ${GRIMA_DB}/grima.db \
+exec ${GRIMA_BIN}/sqlite3.sh -init ${GRIMA_ETC}/grima-db-restore.sql ${GRIMA_DB}/grima.db \
         < ${ARCHIVE}

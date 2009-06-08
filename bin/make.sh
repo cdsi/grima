@@ -5,4 +5,5 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec ${MAKE} ${MAKEFLAGS} "$@"
+grima_record ${MAKE} ${MAKEFLAGS} ${GRIMA_MAKEFLAGS} "$@"
+exec ${MAKE} ${MAKEFLAGS} ${GRIMA_MAKEFLAGS} "$@"

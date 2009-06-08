@@ -58,32 +58,35 @@ grima_recorde()
         echo            "$1"
 }
 
-# native
-
 PATH="${GRIMA_BIN}":"${PATH}"
 export PATH
 
 LD_LIBRARY_PATH="${GRIMA_LIB}":"${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH
 
-PYTHONPATH=${GRIMA_LIB}:${GRIMA_LIB}/python:${PYTHONPATH}
+PYTHONPATH="${GRIMA_LIB}":"${GRIMA_LIB}"/python:"${PYTHONPATH}"
 export PYTHONPATH
 
-# depends
+for x in "${GRIMA_HOME}"/dist/*.jar "${GRIMA_LIB}"/java/*.jar; do
+        CLASSPATH="${x}":"${CLASSPATH}"
+done
 
 DEPENDS_HOME="${GRIMA_SHARE}"
 . "${DEPENDS_HOME}"/depends
 
-# grima
+GRIMA_SVNFLAGS=
+export GRIMA_SVNFLAGS
 
 GRIMA_ACLOCALFLAGS="${ACLOCALFLAGS} -I ${DEPENDS_HOME}/aclocal"
 export GRIMA_ACLOCALFLAGS
 
-GRIMA_CLASSPATH=${CLASSPATH}
+GRIMA_MAKEFLAGS=
+export GRIMA_MAKEFLAGS
 
-for x in ${GRIMA_HOME}/dist/*.jar ${GRIMA_HOME}/lib/java/*.jar; do
-        GRIMA_CLASSPATH="${x}:${GRIMA_CLASSPATH}"
-done
+GRIMA_PYTHONFLAGS=
+export GRIMA_PYTHONFLAGS
+
+GRIMA_CLASSPATH="${CLASSPATH}"
 
 JAVA_MODULES="                                                          \
         /usr/share/java/commons-cli.jar                                 \
@@ -106,7 +109,7 @@ export GRIMA_JAVAFLAGS
 # extras
 
 GRIMA_EXTRAS=" \
-        Elrond			\
+        Elrond                  \
 "
 
 for x in ${GRIMA_EXTRAS}; do

@@ -5,4 +5,5 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec ${SVN} ${SVNFLAGS} "$@"
+grima_record ${SVN} ${SVNFLAGS} ${GRIMA_SVNFLAGS} "$@"
+exec ${SVN} ${SVNFLAGS} ${GRIMA_SVNFLAGS} "$@"
