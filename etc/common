@@ -48,14 +48,14 @@ export GRIMA_LOGFILE
 
 grima_record()
 {
-        date            >> "${GRIMA_LOGFILE}"
-        echo "$1"       >> "${GRIMA_LOGFILE}"
+        date                    >> "${GRIMA_LOGFILE}"
+        echo "$@"               >> "${GRIMA_LOGFILE}"
 }
 
 grima_recorde()
 {
-        grima_record  "$1"
-        echo            "$1"
+        grima_record            "$@"
+        echo                    "$@"
 }
 
 PATH="${GRIMA_BIN}":"${PATH}"
