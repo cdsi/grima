@@ -67,9 +67,21 @@ export LD_LIBRARY_PATH
 PYTHONPATH="${GRIMA_LIB}":"${GRIMA_LIB}"/python:"${PYTHONPATH}"
 export PYTHONPATH
 
-for x in "${GRIMA_HOME}"/dist/*.jar "${GRIMA_LIB}"/java/*.jar; do
-        CLASSPATH="${x}":"${CLASSPATH}"
-done
+if [ -d "${GRIMA_HOME}"/dist ]; then
+	JARFILES="$(find "${GRIMA_HOME}"/dist -name "*.jar")"
+	for jarfile in ${JARFILES}; do
+		CLASSPATH="${jarfile}":"${CLASSPATH}"
+		export CLASSPATH
+	done
+fi
+
+if [ -d "${GRIMA_LIB}"/java ]; then
+	JARFILES="$(find "${GRIMA_LIB}"/java -name "*.jar")"
+	for jarfile in ${JARFILES}; do
+		CLASSPATH="${jarfile}":"${CLASSPATH}"
+		export CLASSPATH
+	done
+fi
 
 DEPENDS_HOME="${GRIMA_SHARE}"
 . "${DEPENDS_HOME}"/depends
@@ -86,23 +98,7 @@ export GRIMA_MAKEFLAGS
 GRIMA_PYTHONFLAGS=
 export GRIMA_PYTHONFLAGS
 
-GRIMA_CLASSPATH="${CLASSPATH}"
-
-JAVA_MODULES="                                                          \
-        /usr/share/java/commons-cli.jar                                 \
-        /usr/share/java/commons-daemon.jar                              \
-        ${NETBEANS_HOME}/java2/modules/ext/AbsoluteLayout.jar           \
-        ${NETBEANS_HOME}/platform9/modules/ext/swing-layout-1.0.3.jar   \
-        ${NETBEANS_HOME}/platform9/modules/ext/junit-4.5.jar            \
-"
-
-for x in ${JAVA_MODULES}; do
-        GRIMA_CLASSPATH="${x}:${GRIMA_CLASSPATH}"
-done
-
-export GRIMA_CLASSPATH
-
-GRIMA_JAVAFLAGS="${JAVAFLAGS} -Dgrima.home=${GRIMA_HOME} -cp ${GRIMA_CLASSPATH} \
+GRIMA_JAVAFLAGS="${JAVAFLAGS} -Dgrima.home=${GRIMA_HOME} \
 	-Djava.util.logging.config.file=${GRIMA_ETC}/grima.properties"
 export GRIMA_JAVAFLAGS
 
