@@ -195,10 +195,10 @@ class IMatplotlibBackend(IBackend):
                 IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
 
                 if xlabel != None:
-                        # TODO: self.__subplot.set_xlabel(xlabel)
+                        # TODO: self.__axes.set_xlabel(xlabel)
                         pass
                 if ylabel != None:
-                        # TODO: self.__subplot.set_ylabel(ylabel)
+                        # TODO: self.__axes.set_ylabel(ylabel)
                         pass
 
                 self.__axes.plot(x, y, style, color='#%06X' % (color))
@@ -236,15 +236,21 @@ class IMatplotlibBackend(IBackend):
 
                 self.canvas.draw()
 
-        def clear(self):
-                if self.props.overlay:
-                        return
-
-                self.__axl.clear()
+        def __reset(self):
                 self.__axl.grid(True)
+                self.__axl.yaxis.set_label_position('left')
+                self.__axl.yaxis.tick_left()
 
-                self.__axr.clear()
                 self.__axr.grid(True)
+                self.__axr.yaxis.set_label_position('right')
+                self.__axr.yaxis.tick_right()
+
+        def clear(self):
+                if not self.props.overlay:
+                        self.__axl.clear()
+                        self.__axr.clear()
+
+                self.__reset()
 
         def subplot_new(self):
                 nsubplots = len(self.__subplots) + 1
@@ -270,12 +276,9 @@ class IMatplotlibBackend(IBackend):
                 self.subplotkludge = False
 
                 self.__axl = self.figure.gca()
-                self.__axl.yaxis.set_label_position('left')
-                self.__axl.yaxis.tick_left()
-
                 self.__axr = self.__axl.twinx()
-                self.__axr.yaxis.set_label_position('right')
-                self.__axr.yaxis.tick_right()
+
+                self.__reset()
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
