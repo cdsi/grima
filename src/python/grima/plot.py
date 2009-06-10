@@ -195,23 +195,27 @@ class IMatplotlibBackend(IBackend):
                 IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
 
                 if xlabel != None:
-                        self.__subplot.set_xlabel(xlabel)
+                        # TODO: self.__subplot.set_xlabel(xlabel)
+                        pass
                 if ylabel != None:
-                        self.__subplot.set_ylabel(ylabel)
+                        # TODO: self.__subplot.set_ylabel(ylabel)
+                        pass
 
-                self.__subplot.plot(x, y, style, color='#%06X' % (color))
-                self.__subplot.grid(True)
+                self.__axes.plot(x, y, style, color='#%06X' % (color))
+                self.__axes.grid(True)
 
         def plotr(self, *args, **kwargs):
                 self.figure.sca(self.__axr)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0x00FF00
+                self.__axes = self.__axr
                 self.__plot__(*args, **kwargs)
 
         def plotl(self, *args, **kwargs):
                 self.figure.sca(self.__axl)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0xFF0000
+                self.__axes = self.__axl
                 self.__plot__(*args, **kwargs)
 
         def ploth(self, y, style='--', color=0xFF0000):
