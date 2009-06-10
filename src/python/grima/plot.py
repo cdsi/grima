@@ -240,8 +240,11 @@ class IMatplotlibBackend(IBackend):
                 if self.props.overlay:
                         return
 
-                self.__subplot.clear()
-                self.__subplot.grid(True)
+                self.__axl.clear()
+                self.__axl.grid(True)
+
+                self.__axr.clear()
+                self.__axr.grid(True)
 
         def subplot_new(self):
                 nsubplots = len(self.__subplots) + 1
