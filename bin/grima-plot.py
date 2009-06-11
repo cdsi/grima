@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+from __future__ import division
+from __future__ import with_statement
 
 from optparse import OptionParser
 
@@ -31,6 +32,8 @@ if __name__ == "__main__":
 
         plot.run()
 
+# $Id:$
+#
 # Local Variables:
 # indent-tabs-mode: nil
 # python-continuation-offset: 2
