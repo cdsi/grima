@@ -228,12 +228,17 @@ class IMatplotlibBackend(IBackend):
                 self.__subplot.grid(True)
 
         def draw(self):
-                self.__subplot.axis('auto')
+                limits = [self.props.xmin, self.props.xmax, self.props.yminl, self.props.ymaxl]
 
-                limits = [self.props.xmin, self.props.xmax, self.props.ymin, self.props.ymax]
-
+                self.__axl.axis('auto')
                 if filter(lambda x: x != 0, limits):
-                        self.__subplot.axis(limits)
+                        self.__axl.axis(limits)
+
+                limits = [self.props.xmin, self.props.xmax, self.props.yminr, self.props.ymaxr]
+
+                self.__axr.axis('auto')
+                if filter(lambda x: x != 0, limits):
+                        self.__axr.axis(limits)
 
                 self.canvas.draw()
 
@@ -424,11 +429,17 @@ class WindowContainer(IContainer):
                         widget = self.__builder.get_object('preferences_xmax_entry')
                         widget.set_text(str(self.backend.props.xmax))
 
-                        widget = self.__builder.get_object('preferences_ymin_entry')
-                        widget.set_text(str(self.backend.props.ymin))
+                        widget = self.__builder.get_object('preferences_yminl_entry')
+                        widget.set_text(str(self.backend.props.yminl))
 
-                        widget = self.__builder.get_object('preferences_ymax_entry')
-                        widget.set_text(str(self.backend.props.ymax))
+                        widget = self.__builder.get_object('preferences_ymaxl_entry')
+                        widget.set_text(str(self.backend.props.ymaxl))
+
+                        widget = self.__builder.get_object('preferences_yminr_entry')
+                        widget.set_text(str(self.backend.props.yminr))
+
+                        widget = self.__builder.get_object('preferences_ymaxr_entry')
+                        widget.set_text(str(self.backend.props.ymaxr))
 
                 return locals()
 
@@ -523,11 +534,17 @@ class WindowContainer(IContainer):
                 widget = self.__builder.get_object('preferences_xmax_entry')
                 self.props.xmax = float(widget.get_text())
 
-                widget = self.__builder.get_object('preferences_ymin_entry')
-                self.props.ymin = float(widget.get_text())
+                widget = self.__builder.get_object('preferences_yminl_entry')
+                self.props.yminl = float(widget.get_text())
 
-                widget = self.__builder.get_object('preferences_ymax_entry')
-                self.props.ymax = float(widget.get_text())
+                widget = self.__builder.get_object('preferences_ymaxl_entry')
+                self.props.ymaxl = float(widget.get_text())
+
+                widget = self.__builder.get_object('preferences_yminr_entry')
+                self.props.yminr = float(widget.get_text())
+
+                widget = self.__builder.get_object('preferences_ymaxr_entry')
+                self.props.ymaxr = float(widget.get_text())
 
                 self.draw()
 
@@ -715,8 +732,10 @@ class Plot(Object):
                 # TODO: use preferences
                 self.xmin = 0
                 self.xmax = 0
-                self.ymin = 0
-                self.ymax = 0
+                self.yminl = 0
+                self.ymaxl = 0
+                self.yminr = 0
+                self.ymaxr = 0
                 self.overlay = False
 
 # $Id:$
