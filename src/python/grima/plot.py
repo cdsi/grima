@@ -718,6 +718,8 @@ class Plot(Object):
                 self.ymax = 0
                 self.overlay = False
 
+# $Id:$
+#
 # Local Variables:
 # indent-tabs-mode: nil
 # python-continuation-offset: 2
