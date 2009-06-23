@@ -56,16 +56,16 @@ class IBackend(Object):
 
                 self.clear()
 
-                self.props.ymin = 0
-                self.props.ymax = 100
+                self.prefs.ymin = 0
+                self.prefs.ymax = 100
 
                 step = 100
 
                 x_first = x_list[0: clamp(step, u=len(x_list))]
                 y_first = y_list[0: clamp(step, u=len(y_list))]
 
-                self.props.xmin = 0
-                self.props.xmax = len(x_first)
+                self.prefs.xmin = 0
+                self.prefs.xmax = len(x_first)
 
                 for i in range(0, len(x_first)):
                         self.plotl(x_first[0:i + 1], y_first[0:i + 1])
@@ -74,8 +74,8 @@ class IBackend(Object):
                 self.plotl(x_list, y_list)
 
                 for i in range(0, len(x_list)):
-                        self.props.xmin = i + 1
-                        self.props.xmax = i + 1 + step
+                        self.prefs.xmin = i + 1
+                        self.prefs.xmax = i + 1 + step
 
                         self.draw()
 
@@ -99,7 +99,7 @@ class IBackend(Object):
 
                 self.draw()
 
-                if not self.props.overlay:
+                if not self.prefs.overlay:
                         self.__storage['data'] = []
 
                 self.__storage['data'].extend(storage['data'])
@@ -137,7 +137,7 @@ class IBackend(Object):
                         'color': '0x%06X' % (color)
                 }
 
-                if not self.props.overlay:
+                if not self.prefs.overlay:
                         self.__storage['data'] = []
 
                 self.__storage['data'].append(data)
@@ -228,13 +228,13 @@ class IMatplotlibBackend(IBackend):
                 self.__subplot.grid(True)
 
         def draw(self):
-                limits = [self.props.xmin, self.props.xmax, self.props.yminl, self.props.ymaxl]
+                limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
 
                 self.__axl.axis('auto')
                 if filter(lambda x: x != 0, limits):
                         self.__axl.axis(limits)
 
-                limits = [self.props.xmin, self.props.xmax, self.props.yminr, self.props.ymaxr]
+                limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
 
                 self.__axr.axis('auto')
                 if filter(lambda x: x != 0, limits):
@@ -252,7 +252,7 @@ class IMatplotlibBackend(IBackend):
                 self.__axr.yaxis.tick_right()
 
         def clear(self):
-                if not self.props.overlay:
+                if not self.prefs.overlay:
                         self.__axl.clear()
                         self.__axr.clear()
 
@@ -349,12 +349,12 @@ class IContainer(Object):
         """
 
         @Property
-        def props():
+        def prefs():
                 def fget(self):
-                        return self.backend.props
+                        return self.backend.prefs
 
-                def fset(self, props):
-                        self.backend.props = props
+                def fset(self, prefs):
+                        self.backend.prefs = prefs
 
                 return locals()
 
@@ -416,30 +416,30 @@ class ImageContainer(IContainer):
 class WindowContainer(IContainer):
 
         @Property
-        def props():
+        def prefs():
                 def fget(self):
-                        return self.backend.props
+                        return self.backend.prefs
 
-                def fset(self, props):
-                        self.backend.props = props
+                def fset(self, prefs):
+                        self.backend.prefs = prefs
 
                         widget = self.__builder.get_object('preferences_xmin_entry')
-                        widget.set_text(str(self.backend.props.xmin))
+                        widget.set_text(str(self.backend.prefs.xmin))
 
                         widget = self.__builder.get_object('preferences_xmax_entry')
-                        widget.set_text(str(self.backend.props.xmax))
+                        widget.set_text(str(self.backend.prefs.xmax))
 
                         widget = self.__builder.get_object('preferences_yminl_entry')
-                        widget.set_text(str(self.backend.props.yminl))
+                        widget.set_text(str(self.backend.prefs.yminl))
 
                         widget = self.__builder.get_object('preferences_ymaxl_entry')
-                        widget.set_text(str(self.backend.props.ymaxl))
+                        widget.set_text(str(self.backend.prefs.ymaxl))
 
                         widget = self.__builder.get_object('preferences_yminr_entry')
-                        widget.set_text(str(self.backend.props.yminr))
+                        widget.set_text(str(self.backend.prefs.yminr))
 
                         widget = self.__builder.get_object('preferences_ymaxr_entry')
-                        widget.set_text(str(self.backend.props.ymaxr))
+                        widget.set_text(str(self.backend.prefs.ymaxr))
 
                 return locals()
 
@@ -529,22 +529,22 @@ class WindowContainer(IContainer):
                 self.__preferences.hide()
 
                 widget = self.__builder.get_object('preferences_xmin_entry')
-                self.props.xmin = float(widget.get_text())
+                self.prefs.xmin = float(widget.get_text())
 
                 widget = self.__builder.get_object('preferences_xmax_entry')
-                self.props.xmax = float(widget.get_text())
+                self.prefs.xmax = float(widget.get_text())
 
                 widget = self.__builder.get_object('preferences_yminl_entry')
-                self.props.yminl = float(widget.get_text())
+                self.prefs.yminl = float(widget.get_text())
 
                 widget = self.__builder.get_object('preferences_ymaxl_entry')
-                self.props.ymaxl = float(widget.get_text())
+                self.prefs.ymaxl = float(widget.get_text())
 
                 widget = self.__builder.get_object('preferences_yminr_entry')
-                self.props.yminr = float(widget.get_text())
+                self.prefs.yminr = float(widget.get_text())
 
                 widget = self.__builder.get_object('preferences_ymaxr_entry')
-                self.props.ymaxr = float(widget.get_text())
+                self.prefs.ymaxr = float(widget.get_text())
 
                 self.draw()
 
@@ -560,7 +560,7 @@ class WindowContainer(IContainer):
                 return True
 
         def on_plot_overlay_button_toggled(self, widget, data=None):
-                self.props.overlay = widget.get_active()
+                self.prefs.overlay = widget.get_active()
 
         def on_plot_window_destroy(self, widget, data=None):
                 gtk.main_quit()
@@ -612,7 +612,7 @@ class Plot(Object):
                         self.__display = WindowContainer(self.container)
 
                 try:
-                        self.__display.props = self
+                        self.__display.prefs = self
                         self.__display.title = self.title
                 except:
                         self.__enabled = False
