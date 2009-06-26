@@ -148,10 +148,16 @@ class IBackend(Object):
         def plotl(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
 
-        def ploth(self, *args, **kwargs):
+        def plotlh(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
 
-        def plotv(self, *args, **kwargs):
+        def plotlv(self, *args, **kwargs):
+                self.__plot__(*args, **kwargs)
+
+        def plotrh(self, *args, **kwargs):
+                self.__plot__(*args, **kwargs)
+
+        def plotrv(self, *args, **kwargs):
                 self.__plot__(*args, **kwargs)
 
         def draw(self, *args, **kwargs):
@@ -219,13 +225,21 @@ class IMatplotlibBackend(IBackend):
                 self.__axes = self.__axl
                 self.__plot__(*args, **kwargs)
 
-        def ploth(self, y, style='--', color=0xFF0000):
-                self.__subplot.axhline(y, ls=style, color='#%06X' % (color))
-                self.__subplot.grid(True)
+        def plotlh(self, y, style='--', color=0xFF0000):
+                self.__axl.axhline(y, ls=style, color='#%06X' % (color))
+                self.__axl.grid(True)
 
-        def plotv(self, x, style='--', color=0xFF0000):
-                self.__subplot.axvline(x, ls=style, color='#%06X' % (color))
-                self.__subplot.grid(True)
+        def plotlv(self, x, style='--', color=0xFF0000):
+                self.__axl.axvline(x, ls=style, color='#%06X' % (color))
+                self.__axl.grid(True)
+
+        def plotrh(self, y, style='--', color=0xFF0000):
+                self.__axr.axhline(y, ls=style, color='#%06X' % (color))
+                self.__axr.grid(True)
+
+        def plotrv(self, x, style='--', color=0xFF0000):
+                self.__axr.axvline(x, ls=style, color='#%06X' % (color))
+                self.__axr.grid(True)
 
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
@@ -364,11 +378,17 @@ class IContainer(Object):
         def plotl(self, *args, **kwargs):
                 self.backend.plotl(*args, **kwargs)
 
-        def ploth(self, *args, **kwargs):
-                self.backend.ploth(*args, **kwargs)
+        def plotlh(self, *args, **kwargs):
+                self.backend.plotlh(*args, **kwargs)
 
-        def plotv(self, *args, **kwargs):
-                self.backend.plotv(*args, **kwargs)
+        def plotlv(self, *args, **kwargs):
+                self.backend.plotlv(*args, **kwargs)
+
+        def plotrh(self, *args, **kwargs):
+                self.backend.plotrh(*args, **kwargs)
+
+        def plotrv(self, *args, **kwargs):
+                self.backend.plotrv(*args, **kwargs)
 
         def draw(self, *args, **kwargs):
                 self.backend.draw(*args, **kwargs)
@@ -661,17 +681,29 @@ class Plot(Object):
 
                 self.__display.plotl(*args, **kwargs)
 
-        def ploth(self, *args, **kwargs):
+        def plotlh(self, *args, **kwargs):
                 if not self.enabled:
                         return
 
-                self.__display.ploth(*args, **kwargs)
+                self.__display.plotlh(*args, **kwargs)
 
-        def plotv(self, *args, **kwargs):
+        def plotlv(self, *args, **kwargs):
                 if not self.enabled:
                         return
 
-                self.__display.plotv(*args, **kwargs)
+                self.__display.plotlv(*args, **kwargs)
+
+        def plotrh(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.plotrh(*args, **kwargs)
+
+        def plotrv(self, *args, **kwargs):
+                if not self.enabled:
+                        return
+
+                self.__display.plotrv(*args, **kwargs)
 
         def draw(self, *args, **kwargs):
                 if not self.enabled:
