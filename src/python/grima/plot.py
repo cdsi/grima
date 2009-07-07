@@ -82,9 +82,9 @@ class IBackend(Object):
         def open(self, filename):
                 self.clear()
 
+                # TODO:
                 if self.subplotkludge:
                         self.subplot_new()
-
                 self.subplotkludge = True
 
                 with open(filename, 'r') as f:
@@ -216,75 +216,77 @@ class IMatplotlibBackend(IBackend):
                 axes.grid(True)
 
         def plotl(self, *args, **kwargs):
-                if not kwargs.has_key('color'):
-                        kwargs['color'] = 0xFF0000
-                kwargs['axes'] = self.__axl
+                kwargs['axes'] = self.__subplots[self.__isubplot]['axl']
                 self.__plot__(*args, **kwargs)
 
         def plotr(self, *args, **kwargs):
-                if not kwargs.has_key('color'):
-                        kwargs['color'] = 0x00FF00
-                kwargs['axes'] = self.__axr
+                kwargs['axes'] = self.__subplots[self.__isubplot]['axr']
                 self.__plot__(*args, **kwargs)
 
         def plotlh(self, y, style='--', color=0xFF0000):
-                self.__axl.axhline(y, ls=style, color='#%06X' % (color))
-                self.__axl.grid(True)
+                self.__subplots[self.__isubplot]['axl'].axhline(y, ls=style, color='#%06X' % (color))
+                self.__subplots[self.__isubplot]['axl'].grid(True)
 
         def plotlv(self, x, style='--', color=0xFF0000):
-                self.__axl.axvline(x, ls=style, color='#%06X' % (color))
-                self.__axl.grid(True)
+                self.__subplots[self.__isubplot]['axl'].axvline(x, ls=style, color='#%06X' % (color))
+                self.__subplots[self.__isubplot]['axl'].grid(True)
 
         def plotrh(self, y, style='--', color=0xFF0000):
-                self.__axr.axhline(y, ls=style, color='#%06X' % (color))
-                self.__axr.grid(True)
+                self.__subplots[self.__isubplot]['axr'].axhline(y, ls=style, color='#%06X' % (color))
+                self.__subplots[self.__isubplot]['axr'].grid(True)
 
         def plotrv(self, x, style='--', color=0xFF0000):
-                self.__axr.axvline(x, ls=style, color='#%06X' % (color))
-                self.__axr.grid(True)
+                self.__subplots[self.__isubplot]['axr'].axvline(x, ls=style, color='#%06X' % (color))
+                self.__subplots[self.__isubplot]['axr'].grid(True)
 
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
 
-                self.__axl.axis('auto')
+                self.__subplots[self.__isubplot]['axl'].axis('auto')
                 if filter(lambda x: x != 0, limits):
-                        self.__axl.axis(limits)
+                        self.__subplots[self.__isubplot]['axl'].axis(limits)
 
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
 
-                self.__axr.axis('auto')
+                self.__subplots[self.__isubplot]['axr'].axis('auto')
                 if filter(lambda x: x != 0, limits):
-                        self.__axr.axis(limits)
+                        self.__subplots[self.__isubplot]['axr'].axis(limits)
 
                 self.canvas.draw()
 
         def __reset(self):
-                self.__axl.grid(True)
-                self.__axl.yaxis.set_label_position('left')
-                self.__axl.yaxis.tick_left()
+                for i, subplot in enumerate(self.__subplots):
+                        axl = subplot['axl']
+                        axr = subplot['axr']
 
-                self.__axr.grid(True)
-                self.__axr.yaxis.set_label_position('right')
-                self.__axr.yaxis.tick_right()
+                        axl.grid(True)
+                        axl.yaxis.set_label_position('left')
+                        axl.yaxis.tick_left()
+
+                        axr.grid(True)
+                        axr.yaxis.set_label_position('right')
+                        axr.yaxis.tick_right()
+
+                        axl.change_geometry(self.__nsubplots, 1, i + 1)
 
         def clear(self):
                 if not self.prefs.overlay:
-                        self.__axl.clear()
-                        self.__axr.clear()
+                        for subplot in self.__subplots:
+                                subplot['axl'].clear()
+                                subplot['axr'].clear()
 
                 self.__reset()
 
         def subplot_new(self):
-                nsubplots = len(self.__subplots) + 1
+                self.__isubplot = len(self.__subplots)
+                self.__nsubplots = self.__isubplot + 1
 
-                subplot = self.figure.add_subplot(nsubplots, 1, nsubplots)
-                subplot.grid(True)
+                axl = self.figure.add_subplot(self.__nsubplots, 1, self.__nsubplots)
+                axr = axl.twinx()
 
-                self.__subplots.append(subplot)
-                self.__subplot = subplot
+                self.__subplots.append({'axl': axl, 'axr': axr})
 
-                for i, subplot in enumerate(self.__subplots):
-                        subplot.change_geometry(nsubplots, 1, i + 1)
+                self.__reset()
 
         def __init__(self):
                 IBackend.__init__(self)
@@ -295,10 +297,8 @@ class IMatplotlibBackend(IBackend):
                 self.__subplots = []
                 self.subplot_new()
 
+                # TODO:
                 self.subplotkludge = False
-
-                self.__axl = self.figure.gca()
-                self.__axr = self.__axl.twinx()
 
                 self.__reset()
 
@@ -626,6 +626,8 @@ class Plot(Object):
                 if not self.__enabled:
                         return
 
+                self.__display = None
+
                 if self.type == 'console':
                         self.__display = ConsoleContainer()
                 if self.type == 'image':
@@ -655,8 +657,8 @@ class Plot(Object):
                 def fget(self):
                         return self.__type
 
-                def fset(self, type):
-                        self.__type = type
+                def fset(self, tipe):
+                        self.__type = tipe
                         self.__create_display()
 
                 return locals()
