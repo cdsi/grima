@@ -20,7 +20,7 @@ import gtk
 
 # our own libraries
 from elrond.macros import clamp
-from elrond.util import Object, Property
+from elrond.util import APINotImplemented, Object, Property
 
 def parse(f):
         x = []
@@ -219,6 +219,7 @@ class IMatplotlibBackend(IBackend):
                 kwargs['axes'] = self.__subplots[self.__isubplot]['axl']
                 self.__plot__(*args, **kwargs)
 
+        @APINotImplemented
         def plotr(self, *args, **kwargs):
                 kwargs['axes'] = self.__subplots[self.__isubplot]['axr']
                 self.__plot__(*args, **kwargs)
@@ -231,26 +232,27 @@ class IMatplotlibBackend(IBackend):
                 self.__subplots[self.__isubplot]['axl'].axvline(x, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axl'].grid(True)
 
+        @APINotImplemented
         def plotrh(self, y, style='--', color=0xFF0000):
                 self.__subplots[self.__isubplot]['axr'].axhline(y, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axr'].grid(True)
 
+        @APINotImplemented
         def plotrv(self, x, style='--', color=0xFF0000):
                 self.__subplots[self.__isubplot]['axr'].axvline(x, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axr'].grid(True)
 
+        def __draw(self, axes, limits):
+                axes.axis('auto')
+                if filter(lambda x: x != 0, limits):
+                        axes.axis(limits)
+
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
+                self.__draw(self.__subplots[self.__isubplot]['axl'], limits)
 
-                self.__subplots[self.__isubplot]['axl'].axis('auto')
-                if filter(lambda x: x != 0, limits):
-                        self.__subplots[self.__isubplot]['axl'].axis(limits)
-
-                limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
-
-                self.__subplots[self.__isubplot]['axr'].axis('auto')
-                if filter(lambda x: x != 0, limits):
-                        self.__subplots[self.__isubplot]['axr'].axis(limits)
+                # limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
+                # self.__draw(self.__subplots[self.__isubplot]['axr'], limits)
 
                 self.canvas.draw()
 
@@ -263,17 +265,17 @@ class IMatplotlibBackend(IBackend):
                         axl.yaxis.set_label_position('left')
                         axl.yaxis.tick_left()
 
-                        axr.grid(True)
-                        axr.yaxis.set_label_position('right')
-                        axr.yaxis.tick_right()
+                        # axr.grid(True)
+                        # axr.yaxis.set_label_position('right')
+                        # axr.yaxis.tick_right()
 
-                        axl.change_geometry(self.__nsubplots, 1, i + 1)
+                        axl.change_geometry(self.__nsubplots, 1, self.__nsubplots - i)
 
         def clear(self):
                 if not self.prefs.overlay:
                         for subplot in self.__subplots:
                                 subplot['axl'].clear()
-                                subplot['axr'].clear()
+                                # subplot['axr'].clear()
 
                 self.__reset()
 
@@ -282,7 +284,7 @@ class IMatplotlibBackend(IBackend):
                 self.__nsubplots = self.__isubplot + 1
 
                 axl = self.figure.add_subplot(self.__nsubplots, 1, self.__nsubplots)
-                axr = axl.twinx()
+                axr = None # axl.twinx()
 
                 self.__subplots.append({'axl': axl, 'axr': axr})
 
@@ -299,8 +301,6 @@ class IMatplotlibBackend(IBackend):
 
                 # TODO:
                 self.subplotkludge = False
-
-                self.__reset()
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
