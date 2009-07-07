@@ -198,31 +198,33 @@ class IMatplotlibBackend(IBackend):
         contains this backed to either render the plot to and image or to a GUI.
         """
 
-        def __plot__(self, x, y, style='-', color=0xFF0000, xlabel=None, ylabel=None):
+        def __plot__(self, x, y, axes=None, style='-', color=0xFF0000, xlabel=None, ylabel=None):
                 IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
 
+                if axes == None:
+                        # TODO: raise an exception
+                        return
+
                 if xlabel != None:
-                        # TODO: self.__axes.set_xlabel(xlabel)
+                        # TODO: axes.set_xlabel(xlabel)
                         pass
                 if ylabel != None:
-                        # TODO: self.__axes.set_ylabel(ylabel)
+                        # TODO: axes.set_ylabel(ylabel)
                         pass
 
-                self.__axes.plot(x, y, style, color='#%06X' % (color))
-                self.__axes.grid(True)
-
-        def plotr(self, *args, **kwargs):
-                self.figure.sca(self.__axr)
-                if not kwargs.has_key('color'):
-                        kwargs['color'] = 0x00FF00
-                self.__axes = self.__axr
-                self.__plot__(*args, **kwargs)
+                axes.plot(x, y, style, color='#%06X' % (color))
+                axes.grid(True)
 
         def plotl(self, *args, **kwargs):
-                self.figure.sca(self.__axl)
                 if not kwargs.has_key('color'):
                         kwargs['color'] = 0xFF0000
-                self.__axes = self.__axl
+                kwargs['axes'] = self.__axl
+                self.__plot__(*args, **kwargs)
+
+        def plotr(self, *args, **kwargs):
+                if not kwargs.has_key('color'):
+                        kwargs['color'] = 0x00FF00
+                kwargs['axes'] = self.__axr
                 self.__plot__(*args, **kwargs)
 
         def plotlh(self, y, style='--', color=0xFF0000):
