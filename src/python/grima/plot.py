@@ -79,23 +79,18 @@ class IBackend(Object):
 
                         self.draw()
 
-        def open(self, filename):
+        def open(self, filename, i=None):
                 self.clear()
-
-                # TODO:
-                if self.subplotkludge:
-                        self.subplot_new()
-                self.subplotkludge = True
 
                 with open(filename, 'r') as f:
                         storage = json.load(f)
 
-                        print 'File: %s' % (filename)
-                        print 'Timestamp: %s' % (storage['timestamp'])
+                print 'File: %s' % (filename)
+                print 'Timestamp: %s' % (storage['timestamp'])
 
-                        for data in storage['data']:
-                                self.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
-                                           style=data['style'], color=int(data['color'], 0))
+                for data in storage['data']:
+                        self.plotl(data['x'], data['y'], i=i, xlabel=data['xlabel'], ylabel=data['ylabel'],
+                                   style=data['style'], color=int(data['color'], 0))
 
                 self.draw()
 
@@ -198,61 +193,76 @@ class IMatplotlibBackend(IBackend):
         contains this backed to either render the plot to and image or to a GUI.
         """
 
-        def __plot__(self, x, y, axes=None, style='-', color=0xFF0000, xlabel=None, ylabel=None):
+        def __plot__(self, x, y, i=None, axes=None, style='-', color=0xFF0000, xlabel=None, ylabel=None):
                 IBackend.__plot__(self, x, y, style=style, color=color, xlabel=xlabel, ylabel=ylabel)
 
-                if axes == None:
+                if i is None or axes is None:
                         # TODO: raise an exception
                         return
 
-                if xlabel != None:
+                if not xlabel is None:
                         # TODO: axes.set_xlabel(xlabel)
                         pass
-                if ylabel != None:
+                if not ylabel is None:
                         # TODO: axes.set_ylabel(ylabel)
                         pass
 
-                axes.plot(x, y, style, color='#%06X' % (color))
-                axes.grid(True)
+                if i > self.__nsubplots - 1:
+                        self.subplot_new()
+
+                subplot = self.__subplots[i][axes]
+
+                subplot.plot(x, y, style, color='#%06X' % (color))
+                subplot.grid(True)
 
         def plotl(self, *args, **kwargs):
-                kwargs['axes'] = self.__subplots[self.__isubplot]['axl']
+                if not 'i' in kwargs:
+                        kwargs['i'] = self.__isubplot
+                kwargs['axes'] = 'axl'
                 self.__plot__(*args, **kwargs)
 
         @APINotImplemented
         def plotr(self, *args, **kwargs):
-                kwargs['axes'] = self.__subplots[self.__isubplot]['axr']
+                if not 'i' in kwargs:
+                        kwargs['i'] = self.__isubplot
+                kwargs['axes'] = 'axr'
                 self.__plot__(*args, **kwargs)
 
         def plotlh(self, y, style='--', color=0xFF0000):
+                # TODO: must call self.__plot__
                 self.__subplots[self.__isubplot]['axl'].axhline(y, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axl'].grid(True)
 
         def plotlv(self, x, style='--', color=0xFF0000):
+                # TODO: must call self.__plot__
                 self.__subplots[self.__isubplot]['axl'].axvline(x, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axl'].grid(True)
 
         @APINotImplemented
         def plotrh(self, y, style='--', color=0xFF0000):
+                # TODO: must call self.__plot__
                 self.__subplots[self.__isubplot]['axr'].axhline(y, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axr'].grid(True)
 
         @APINotImplemented
         def plotrv(self, x, style='--', color=0xFF0000):
+                # TODO: must call self.__plot__
                 self.__subplots[self.__isubplot]['axr'].axvline(x, ls=style, color='#%06X' % (color))
                 self.__subplots[self.__isubplot]['axr'].grid(True)
 
-        def __draw(self, axes, limits):
-                axes.axis('auto')
+        def __draw(self, i, axes, limits):
+                subplot = self.__subplots[i][axes]
+
+                subplot.axis('auto')
                 if filter(lambda x: x != 0, limits):
-                        axes.axis(limits)
+                        subplot.axis(limits)
 
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
-                self.__draw(self.__subplots[self.__isubplot]['axl'], limits)
+                self.__draw(self.__isubplot, 'axl', limits)
 
                 # limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
-                # self.__draw(self.__subplots[self.__isubplot]['axr'], limits)
+                # self.__draw(self.__isubplot, 'axr', limits)
 
                 self.canvas.draw()
 
@@ -274,8 +284,11 @@ class IMatplotlibBackend(IBackend):
         def clear(self):
                 if not self.prefs.overlay:
                         for subplot in self.__subplots:
-                                subplot['axl'].clear()
-                                # subplot['axr'].clear()
+                                try:
+                                        subplot['axl'].clear()
+                                        subplot['axr'].clear()
+                                except:
+                                        pass
 
                 self.__reset()
 
@@ -298,9 +311,6 @@ class IMatplotlibBackend(IBackend):
 
                 self.__subplots = []
                 self.subplot_new()
-
-                # TODO:
-                self.subplotkludge = False
 
 class MatplotlibImageBackend(IMatplotlibBackend):
 
@@ -407,14 +417,14 @@ class IContainer(Object):
         def run(self, *args, **kwargs):
                 self.backend.run(*args, **kwargs)
 
-        def stripchart(self, filename):
-                self.backend.stripchart(filename)
+        def stripchart(self, *args, **kwargs):
+                self.backend.stripchart(*args, **kwargs)
 
-        def open(self, filename):
-                self.backend.open(filename)
+        def open(self, *args, **kwargs):
+                self.backend.open(*args, **kwargs)
 
-        def save(self, filename):
-                self.backend.save(filename)
+        def save(self, *args, **kwargs):
+                self.backend.save(*args, **kwargs)
 
 class ConsoleContainer(IContainer):
 

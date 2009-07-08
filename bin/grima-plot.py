@@ -27,8 +27,8 @@ if __name__ == "__main__":
         plot.show()
         plot.draw()
 
-        for filename in args:
-                plot.open(filename)
+        for i, filename in enumerate(args):
+                plot.open(filename, i=i)
 
         plot.run()
 
