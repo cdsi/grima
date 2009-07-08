@@ -228,41 +228,49 @@ class IMatplotlibBackend(IBackend):
                 kwargs['axes'] = 'axr'
                 self.__plot__(*args, **kwargs)
 
-        def plotlh(self, y, style='--', color=0xFF0000):
+        def plotlh(self, y, i=None, style='--', color=0xFF0000):
                 # TODO: must call self.__plot__
-                self.__subplots[self.__isubplot]['axl'].axhline(y, ls=style, color='#%06X' % (color))
-                self.__subplots[self.__isubplot]['axl'].grid(True)
+                if i is None:
+                        i = self.__isubplot
+                self.__subplots[i]['axl'].axhline(y, ls=style, color='#%06X' % (color))
+                self.__subplots[i]['axl'].grid(True)
 
-        def plotlv(self, x, style='--', color=0xFF0000):
+        def plotlv(self, x, i=None, style='--', color=0xFF0000):
                 # TODO: must call self.__plot__
-                self.__subplots[self.__isubplot]['axl'].axvline(x, ls=style, color='#%06X' % (color))
-                self.__subplots[self.__isubplot]['axl'].grid(True)
+                if i is None:
+                        i = self.__isubplot
+                self.__subplots[i]['axl'].axvline(x, ls=style, color='#%06X' % (color))
+                self.__subplots[i]['axl'].grid(True)
 
         @APINotImplemented
-        def plotrh(self, y, style='--', color=0xFF0000):
+        def plotrh(self, y, i=None, style='--', color=0xFF0000):
                 # TODO: must call self.__plot__
-                self.__subplots[self.__isubplot]['axr'].axhline(y, ls=style, color='#%06X' % (color))
-                self.__subplots[self.__isubplot]['axr'].grid(True)
+                if i is None:
+                        i = self.__isubplot
+                self.__subplots[i]['axr'].axhline(y, ls=style, color='#%06X' % (color))
+                self.__subplots[i]['axr'].grid(True)
 
         @APINotImplemented
-        def plotrv(self, x, style='--', color=0xFF0000):
+        def plotrv(self, x, i=None, style='--', color=0xFF0000):
                 # TODO: must call self.__plot__
-                self.__subplots[self.__isubplot]['axr'].axvline(x, ls=style, color='#%06X' % (color))
-                self.__subplots[self.__isubplot]['axr'].grid(True)
+                if i is None:
+                        i = self.__isubplot
+                self.__subplots[i]['axr'].axvline(x, ls=style, color='#%06X' % (color))
+                self.__subplots[i]['axr'].grid(True)
 
-        def __draw(self, i, axes, limits):
-                subplot = self.__subplots[i][axes]
-
+        def __draw(self, subplot, limits):
                 subplot.axis('auto')
                 if filter(lambda x: x != 0, limits):
                         subplot.axis(limits)
 
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
-                self.__draw(self.__isubplot, 'axl', limits)
+                for subplot in self.__subplots:
+                        self.__draw(subplot['axl'], limits)
 
                 # limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
-                # self.__draw(self.__isubplot, 'axr', limits)
+                # for subplot in self.__subplots:
+                #         self.__draw(subplot['axr'], limits)
 
                 self.canvas.draw()
 
