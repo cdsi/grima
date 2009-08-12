@@ -289,6 +289,8 @@ class IMatplotlibBackend(IBackend):
 
                         axl.change_geometry(self.__nsubplots, 1, self.__nsubplots - i)
 
+                self.figure.subplots_adjust()
+
         def clear(self):
                 if not self.prefs.overlay:
                         for subplot in self.__subplots:
