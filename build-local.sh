@@ -3,7 +3,7 @@
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common
 
-if [ ! "${SKIP_QUESTIONS}" = "" ]; then
+if [ "${SKIP_QUESTIONS}" = "" ]; then
         echo -n "Delete the database? [y/N] "
         read answer
         case "${answer}" in
