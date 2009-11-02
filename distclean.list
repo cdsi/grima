@@ -33,3 +33,4 @@ src/python/grima.egg-info/PKG-INFO
 src/python/grima.egg-info/SOURCES.txt
 src/python/grima.egg-info/top_level.txt
 var/db/grima.db
+var/log/grima.log
