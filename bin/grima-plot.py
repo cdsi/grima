@@ -3,34 +3,32 @@ from __future__ import with_statement
 
 from optparse import OptionParser
 
-from grima.plot import Plot
+from grima.ui import Plot
 
-if __name__ == "__main__":
+op = OptionParser('%prog [options] data1 data2 data3 ...')
 
-        op = OptionParser('%prog [options] data1 data2 data3 ...')
+op.add_option('--title', action='store', dest='title', default=None,
+              help='title to be used in plot window')
+op.add_option('--type', action='store', dest='type', default='window',
+              help='[console | window | image:filename] default is window')
 
-        op.add_option('--title', action='store', dest='title', default=None,
-                      help='title to be used in plot window')
-        op.add_option('--type', action='store', dest='type', default='window',
-                      help='[console | window | image:filename] default is window')
+(options, args) = op.parse_args()
 
-        (options, args) = op.parse_args()
+plot = Plot()
 
-        plot = Plot()
+plot.type = options.type
+plot.title = options.title
 
-        plot.type = options.type
-        plot.title = options.title
+plot.enabled = True
+plot.overlay = True
 
-        plot.enabled = True
-        plot.overlay = True
+plot.show()
+plot.draw()
 
-        plot.show()
-        plot.draw()
+for i, filename in enumerate(args):
+        plot.open(filename, i=i)
 
-        for i, filename in enumerate(args):
-                plot.open(filename, i=i)
-
-        plot.run()
+plot.run()
 
 # $Id:$
 #
