@@ -3,6 +3,8 @@ from __future__ import with_statement
 
 from optparse import OptionParser
 
+import numpy as np
+
 from grima.plot2 import Plot
 
 op = OptionParser('%prog [options] data1 data2 data3 ...')
@@ -13,15 +15,24 @@ op.add_option('--title', action='store', dest='title', default=None,
 (options, args) = op.parse_args()
 
 plot = Plot()
-
 plot.title = options.title
 
+x = np.arange(0,3,.02)
+y = np.exp(x)
+z = y[::-1]
+
+subplot1 = plot.subplot_new()
+plot.subplot_del(subplot1)
+
+subplot2 = plot.subplot_new()
+subplot2.plotl(x, y, color=0x00FF00, style='--')
+subplot2.plotl(x, z, color=0x0000FF, style='--')
+
+subplot3 = plot.subplot_new()
+subplot3.plotl(x, y + z, xlabel='X Label', ylabel='Y Label')
+subplot3.set_limitsl([-3, 6, 0, 100])
+
 plot.show()
-plot.draw()
-
-for filename in args:
-        plot.open(filename)
-
 plot.run()
 
 # $Id:$
