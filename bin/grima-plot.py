@@ -3,7 +3,7 @@ from __future__ import with_statement
 
 from optparse import OptionParser
 
-from grima.ui import Plot
+from grima.plot import Plot
 
 op = OptionParser('%prog [options] data1 data2 data3 ...')
 
