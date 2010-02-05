@@ -155,8 +155,6 @@ class SubPlot(Playable):
                 self.__axes['axl'].clear()
                 # TODO: self.__axes['axr'].clear()
 
-                self.draw()
-
         def __play(self):
                 while self.is_running:
                         try:
@@ -240,6 +238,9 @@ class Plot(Widget):
                         subplot.clear()
 
                 self.__reset()
+
+                self.__canvas.draw()
+                self.draw()
 
         def show(self):
                 self.widget.show()
