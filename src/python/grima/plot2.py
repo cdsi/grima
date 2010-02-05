@@ -94,7 +94,8 @@ class SubPlot(Playable):
                 self.__set_limits(self.__axes['axr'], limits)
 
         def __plot__(self, axes, xlabel, ylabel):
-                self.clear()
+                if not self.overlay:
+                        self.clear()
 
                 if xlabel:
                         axes.set_xlabel(xlabel)
@@ -151,11 +152,10 @@ class SubPlot(Playable):
                 axl.change_geometry(nsubplots, 1, nsubplots - i)
 
         def clear(self):
-                if self.overlay:
-                        return
-
                 self.__axes['axl'].clear()
                 # TODO: self.__axes['axr'].clear()
+
+                self.draw()
 
         def __play(self):
                 while self.is_running:
@@ -181,13 +181,27 @@ class SubPlot(Playable):
 
                 self.__axes = {'axl': axl, 'axr': axr}
 
-        def axes_del(self, figure):
+        def axes_delete(self, figure):
                 figure.delaxes(self.__axes['axl'])
 
         def __init__(self):
                 self.overlay = True
 
 class Plot(Widget):
+
+        @Property
+        def overlay():
+                def fget(self):
+                        return self.prefs['overlay'].enabled
+
+                def fset(self, overlay):
+                        for subplot in self.__subplots:
+                                subplot.overlay = overlay
+
+                        widget = self.builder.get_object('overlay__enabled')
+                        widget.set_active(overlay)
+
+                return locals()
 
         def __reset(self):
                 nsubplots = len(self.__subplots)
@@ -206,8 +220,8 @@ class Plot(Widget):
 
                 return subplot
 
-        def subplot_del(self, subplot):
-                subplot.axes_del(self.__figure)
+        def subplot_delete(self, subplot):
+                subplot.axes_delete(self.__figure)
 
                 self.__subplots.remove(subplot)
                 self.__reset()
@@ -224,6 +238,8 @@ class Plot(Widget):
         def clear(self):
                 for subplot in self.__subplots:
                         subplot.clear()
+
+                self.__reset()
 
         def show(self):
                 self.widget.show()
@@ -276,7 +292,7 @@ class Plot(Widget):
                 widget.pack_start(self.__canvas)
                 widget.pack_start(self.__toolbar, False, False)
 
-                container = self.builder.get_object('plot_backend')
+                container = self.builder.get_object('container')
                 container.add(widget)
 
                 # TODO: this should not be needed, but somehow the widget show'ing order

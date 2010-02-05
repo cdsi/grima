@@ -16,13 +16,14 @@ op.add_option('--title', action='store', dest='title', default=None,
 
 plot = Plot()
 plot.title = options.title
+plot.overlay = True
 
 x = np.arange(0,3,.02)
 y = np.exp(x)
 z = y[::-1]
 
 subplot1 = plot.subplot_new()
-plot.subplot_del(subplot1)
+plot.subplot_delete(subplot1)
 
 subplot2 = plot.subplot_new()
 subplot2.plotl(x, y, color=0x00FF00, style='--')
