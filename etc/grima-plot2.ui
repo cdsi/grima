@@ -2,9 +2,8 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkWindow" id="grima-plot2">
-    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-    <signal name="destroy" handler="on_exit"/>
+  <object class="GtkAlignment" id="grima-plot2">
+    <property name="visible">True</property>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="visible">True</property>
@@ -105,6 +104,8 @@
         </child>
         <child>
           <object class="GtkAlignment" id="container">
+            <property name="width_request">500</property>
+            <property name="height_request">500</property>
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>

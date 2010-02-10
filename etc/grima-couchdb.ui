@@ -2,7 +2,24 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkWindow" id="glade-couchdb">
+  <object class="GtkListStore" id="liststore">
+    <columns>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name date -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">name...</col>
+        <col id="1" translatable="yes">date...</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkTreeModelSort" id="treemodelsort">
+    <property name="model">liststore</property>
+  </object>
+  <object class="GtkWindow" id="grima-couchdb">
     <signal name="destroy" handler="on_exit"/>
     <child>
       <object class="GtkVBox" id="vbox">
@@ -25,7 +42,6 @@
               <object class="GtkTreeView" id="treeview">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="model">treemodelsort</property>
               </object>
               <packing>
                 <property name="resize">False</property>
@@ -61,22 +77,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkTreeModelSort" id="treemodelsort">
-    <property name="model">liststore</property>
-  </object>
-  <object class="GtkListStore" id="liststore">
-    <columns>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-      <!-- column-name date -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">name...</col>
-        <col id="1" translatable="yes">date...</col>
-      </row>
-    </data>
   </object>
 </interface>
