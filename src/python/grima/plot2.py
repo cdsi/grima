@@ -296,10 +296,6 @@ class Plot(Widget):
                 container = self.builder.get_object('container')
                 container.add(widget)
 
-                # TODO: this should not be needed, but somehow the widget show'ing order
-                # is all screwed up and the window doesn't display correctly without this
-                self.widget.set_default_size(500, 500)
-
                 self.__filename = None
                 self.__subplots = []
 
