@@ -267,7 +267,7 @@ class Plot(Widget):
         def on_clear(self, widget):
                 self.clear()
 
-        def __init__(self, container=None):
+        def __init__(self):
                 Widget.__init__(self)
 
                 path = os.environ['GRIMA_ETC']
@@ -293,9 +293,7 @@ class Plot(Widget):
                 widget.pack_start(self.__canvas)
                 widget.pack_start(self.__toolbar, False, False)
 
-                if not container:
-                        container = self.builder.get_object('container')
-
+                container = self.builder.get_object('container')
                 container.add(widget)
 
                 self.__filename = None
