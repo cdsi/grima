@@ -19,8 +19,8 @@
   <object class="GtkTreeModelSort" id="treemodelsort">
     <property name="model">liststore</property>
   </object>
-  <object class="GtkWindow" id="grima-couchdb">
-    <signal name="destroy" handler="on_exit"/>
+  <object class="GtkAlignment" id="grima-couchdb">
+    <property name="visible">True</property>
     <child>
       <object class="GtkVBox" id="vbox">
         <property name="visible">True</property>
@@ -62,17 +62,7 @@
             </child>
           </object>
           <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkStatusbar" id="statusbar">
-            <property name="visible">True</property>
-            <property name="spacing">2</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="position">2</property>
+            <property name="position">0</property>
           </packing>
         </child>
       </object>
