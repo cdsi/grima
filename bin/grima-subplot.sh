@@ -18,6 +18,6 @@ if [ ! -f "${GRIMA_ETC}"/grima-plot2.ini ]; then
         cp "${GRIMA_ETC}"/grima-plot2.ini.in "${GRIMA_ETC}"/grima-plot2.ini
 fi
 
-echo $$ > "${GRIMA_RUN}"/grima-plot2.pid
+echo $$ > "${GRIMA_RUN}"/grima-subplot.pid
 
-exec python.sh "${GRIMA_BIN}"/grima-plot2.py "$@"
+exec python.sh "${GRIMA_BIN}"/grima-subplot.py "$@"
