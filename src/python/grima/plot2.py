@@ -79,7 +79,7 @@ class IBackend(Object):
                         'data': []
                         }
 
-class SubPlot(Playable):
+class SubPlot(Widget):
 
         def __set_limits(self, axes, limits):
                 axes.axis('auto')
@@ -155,24 +155,6 @@ class SubPlot(Playable):
                 self.__axes['axl'].clear()
                 # TODO: self.__axes['axr'].clear()
 
-        def __play(self):
-                while self.is_running:
-                        try:
-                                with open(self.socket, 'r') as fd:
-                                        while self.is_running:
-                                                # TODO: readline needs a timeout
-                                                line = fd.readline()
-                                                if line == '':
-                                                        break
-
-                                                gtk.gdk.threads_enter()
-                                                self.append(line)
-                                                gtk.gdk.threads_leave()
-
-                                                yield
-                        except:
-                                pass
-
         def axes_new(self, figure, nsubplots):
                 axl = figure.add_subplot(nsubplots + 1, 1, nsubplots + 1)
                 axr = None # TODO: axl.twinx()
@@ -183,7 +165,23 @@ class SubPlot(Playable):
                 figure.delaxes(self.__axes['axl'])
 
         def __init__(self):
+                Widget.__init__(self)
+
                 self.overlay = True
+
+class StripChart(SubPlot, Playable):
+
+        def __play(self):
+                pass
+
+        def __init__(self, callback, interval=1, duration=60):
+                SubPlot.__init__(self)
+
+                self.__callback = callback
+                self.__interval = interval
+                self.__duration = duration
+
+                Playable.__init__(self, self.__play)
 
 class Plot(Widget):
 
@@ -209,8 +207,7 @@ class Plot(Widget):
 
                 self.__figure.subplots_adjust()
 
-        def subplot_new(self):
-                subplot = SubPlot()
+        def __subplot_new(self, subplot):
                 subplot.axes_new(self.__figure, len(self.__subplots))
 
                 self.__subplots.append(subplot)
@@ -218,11 +215,23 @@ class Plot(Widget):
 
                 return subplot
 
-        def subplot_delete(self, subplot):
+        def __subplot_delete(self, subplot):
                 subplot.axes_delete(self.__figure)
 
                 self.__subplots.remove(subplot)
                 self.__reset()
+
+        def subplot_new(self, *args, **kwargs):
+                return self.__subplot_new(SubPlot(*args, **kwargs))
+
+        def subplot_delete(self, subplot):
+                self.__subplot_delete(subplot)
+
+        def stripchart_new(self, *args, **kwargs):
+                return self.__subplot_new(StripChart(*args, **kwargs))
+
+        def stripchart_delete(self, subplot):
+                self.__subplot_delete(subplot)
 
         def __save(self, filename):
                 if not filename:
