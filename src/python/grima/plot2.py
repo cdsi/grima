@@ -24,61 +24,6 @@ from elrond.macros import clamp
 from elrond.ui import Widget, Playable, SaveAs
 from elrond.util import APINotImplemented, Object, Property
 
-class IBackend(Object):
-        """The IBackend class is the base implementation for any class that can produce plots.
-        e.g. ASCII art or fancy GUI backends like matplotlib.
-        """
-
-        def open(self, filename):
-                self.clear()
-
-                with open(filename, 'r') as f:
-                        storage = json.load(f)
-
-                print 'File: %s' % (filename)
-                print 'Timestamp: %s' % (storage['timestamp'])
-
-                for data in storage['data']:
-                        self.plotl(data['x'], data['y'], xlabel=data['xlabel'], ylabel=data['ylabel'],
-                                   style=data['style'], color=int(data['color'], 0))
-
-                self.draw()
-
-                if not self.prefs.overlay:
-                        self.__storage['data'] = []
-
-                self.__storage['data'].extend(storage['data'])
-
-        def save(self, filename):
-                self.__storage['timestamp'] = time.ctime(time.time())
-
-                with open(filename, 'w') as f:
-                        json.dump(self.__storage, f, indent=8)
-
-        def __plot__(self, x, y, style=None, color=0xFF0000, xlabel=None, ylabel=None):
-                self.stats(x, y)
-
-                data = {
-                        'xlabel': xlabel,
-                        'x': x,
-                        'ylabel': ylabel,
-                        'y': y,
-                        'style': style,
-                        'color': '0x%06X' % (color)
-                        }
-
-                if not self.prefs.overlay:
-                        self.__storage['data'] = []
-
-                self.__storage['data'].append(data)
-
-        def __init__(self):
-                Object.__init__(self)
-
-                self.__storage = {
-                        'data': []
-                        }
-
 class SubPlot(Widget):
 
         def __set_limits(self, axes, limits):
