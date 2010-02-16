@@ -11,7 +11,9 @@ from grima.plot2 import Plot
 op = OptionParser('%prog [options] data1 data2 data3 ...')
 
 op.add_option('--title', action='store', dest='title', default=None,
-              help='title to be used in plot window')
+              help='The plot window title.')
+op.add_option('--deletable', action='store', dest='deletable', default=True,
+              help='When disabled the plot window is not closable.')
 
 (options, args) = op.parse_args()
 
@@ -20,6 +22,7 @@ plot.overlay = True
 
 window = Window(widget=plot)
 window.title = options.title
+window.deletable = options.deletable
 
 x = np.arange(0,3,.02)
 y = np.exp(x)
