@@ -13,8 +13,8 @@ import time
 
 # matplotlib.sf.net
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationToolbar
+from matplotlib.backends.backend_gtkcairo import FigureCanvasGTKCairo as FigureCanvas
+from matplotlib.backends.backend_gtkcairo import NavigationToolbar2GTK as NavigationToolbar
 
 # www.gtk.org
 import gtk
