@@ -8,36 +8,57 @@ import numpy as np
 from elrond.ui import Window
 from grima.plot2 import Plot
 
-def callback():
-        pass
+x = np.arange(0, 3, .02)
+y = np.sin(2 * np.pi * x)
+z = y[::-1]
 
-op = OptionParser('%prog [options] data1 data2 data3 ...')
+def callback2():
+        i = 0
+        while True:
+                yield [(x[i], y[i])]
+                i += 1
+
+def callback3():
+        i = 0
+        while True:
+                yield [(x[i], z[i])]
+                i += 1
+
+op = OptionParser('%prog [options]')
+
+op.add_option('--socket', action='store', dest='socket', default=None,
+              help='The named pipe created by mkfifo')
 
 op.add_option('--title', action='store', dest='title', default=None,
-              help='title to be used in plot window')
+              help='The subplot window title.')
+op.add_option('--deletable', action='store', dest='deletable', default=True,
+              help='When disabled the subplot window is not closable.')
 
 (options, args) = op.parse_args()
+
+# TODO: if options.socket == None:
+# TODO:         op.error('--socket=... is required')
+
+socket = options.socket
 
 plot = Plot()
 plot.overlay = True
 
 window = Window(widget=plot)
 window.title = options.title
+window.deletable = options.deletable
 
-x = np.arange(0,3,.02)
-y = np.exp(x)
-z = y[::-1]
-
-stripchart1 = plot.stripchart_new(callback)
+stripchart1 = plot.stripchart_new()
 plot.stripchart_delete(stripchart1)
 
-stripchart2 = plot.stripchart_new(callback)
-stripchart2.plotl(x, y, color=0x00FF00, style='--')
-stripchart2.plotl(x, z, color=0x0000FF, style='--')
+stripchart2 = plot.stripchart_new()
+stripchart2.limitsl = [0, 10, -2, 2]
 
-stripchart3 = plot.stripchart_new(callback)
-stripchart3.plotl(x, y + z, xlabel='X Label', ylabel='Y Label')
-stripchart3.set_limitsl([-3, 6, 0, 100])
+stripchart3 = plot.stripchart_new()
+stripchart3.limitsl = [0, 20, -2, 2]
+
+stripchart2.play(callback2, interval=2/10)
+stripchart3.play(callback3, interval=1/10)
 
 window.show()
 window.run()
