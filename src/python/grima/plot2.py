@@ -12,9 +12,9 @@ import os
 import time
 
 # matplotlib.sf.net
-import matplotlib
-
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationToolbar
 
 # www.gtk.org
 import gtk
@@ -245,15 +245,8 @@ class Plot(Widget):
                 self.loadui(path, name)
                 self.loaddb(path, name)
 
-                from matplotlib.backends.backend_gtk \
-                  import FigureCanvasGTK as FigureCanvas
-
                 self.__figure = Figure()
                 self.__canvas = FigureCanvas(self.__figure)
-
-                from matplotlib.backends.backend_gtk \
-                  import NavigationToolbar2GTK as NavigationToolbar
-
                 self.__toolbar = NavigationToolbar(self.__canvas, None)
 
                 widget = gtk.VBox()
