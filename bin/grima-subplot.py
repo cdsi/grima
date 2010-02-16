@@ -24,7 +24,7 @@ window = Window(widget=plot)
 window.title = options.title
 window.deletable = options.deletable
 
-x = np.arange(0,3,.02)
+x = np.arange(0, 3, .02)
 y = np.exp(x)
 z = y[::-1]
 
