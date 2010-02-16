@@ -10,15 +10,15 @@ from grima.plot2 import Plot
 
 x = np.arange(0, 3, .02)
 y = np.sin(2 * np.pi * x)
-z = y[::-1]
+z = np.cos(2 * np.pi * x)
 
-def callback2():
+def callback1():
         i = 0
         while True:
                 yield [(x[i], y[i])]
                 i += 1
 
-def callback3():
+def callback2():
         i = 0
         while True:
                 yield [(x[i], z[i])]
@@ -42,23 +42,20 @@ op.add_option('--deletable', action='store', dest='deletable', default=True,
 socket = options.socket
 
 plot = Plot()
-plot.overlay = True
+plot.overlay = False
 
 window = Window(widget=plot)
 window.title = options.title
 window.deletable = options.deletable
 
 stripchart1 = plot.stripchart_new()
-plot.stripchart_delete(stripchart1)
+stripchart1.limitsl = [0, 10, -2, 2]
 
 stripchart2 = plot.stripchart_new()
-stripchart2.limitsl = [0, 10, -2, 2]
+stripchart2.limitsl = [0, 20, -2, 2]
 
-stripchart3 = plot.stripchart_new()
-stripchart3.limitsl = [0, 20, -2, 2]
-
-stripchart2.play(callback2, interval=2/10)
-stripchart3.play(callback3, interval=1/10)
+stripchart1.play(callback1, interval=2/10)
+stripchart2.play(callback2, interval=1/10)
 
 window.show()
 window.run()
