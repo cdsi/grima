@@ -32,12 +32,6 @@ class SubPlot(Widget):
                 if filter(lambda x: x != 0, limits):
                         axes.axis(limits)
 
-        def set_limitsl(self, limits):
-                self.__set_limits(self.__axes['axl'], limits)
-
-        def set_limitsr(self, limits):
-                self.__set_limits(self.__axes['axr'], limits)
-
         def __plot__(self, axes, xlabel, ylabel):
                 if not self.overlay:
                         self.clear()
@@ -100,11 +94,22 @@ class SubPlot(Widget):
                 self.__axes['axl'].clear()
                 # TODO: self.__axes['axr'].clear()
 
-        def axes_new(self, figure, nsubplots):
+        def draw(self):
+                axl = self.__axes['axl']
+                self.__set_limits(axl, self.limitsl)
+
+                # TODO: axr = self.__axes['axr']
+                # TODO: self.__set_limits(axr, self.limitsr)
+
+                self.__canvas.draw()
+
+        def axes_new(self, figure, canvas, nsubplots):
                 axl = figure.add_subplot(nsubplots + 1, 1, nsubplots + 1)
                 axr = None # TODO: axl.twinx()
 
                 self.__axes = {'axl': axl, 'axr': axr}
+
+                self.__canvas = canvas
 
         def axes_delete(self, figure):
                 figure.delaxes(self.__axes['axl'])
@@ -112,21 +117,31 @@ class SubPlot(Widget):
         def __init__(self):
                 Widget.__init__(self)
 
+                self.limitsl = []
+                self.limitsr = []
+
                 self.overlay = True
 
 class StripChart(SubPlot, Playable):
 
-        def __play(self):
-                pass
+        def __tasklette(self, callback, interval=1, duration=60):
+                x = []
+                y = []
 
-        def __init__(self, callback, interval=1, duration=60):
+                for data in callback():
+                        for __x, __y in data:
+                                x.append(__x)
+                                y.append(__y)
+                                
+                                self.plotl(x, y)
+
+                        self.draw()
+
+                        time.sleep(interval)
+
+        def __init__(self):
                 SubPlot.__init__(self)
-
-                self.__callback = callback
-                self.__interval = interval
-                self.__duration = duration
-
-                Playable.__init__(self, self.__play)
+                Playable.__init__(self, self.__tasklette)
 
 class Plot(Widget):
 
@@ -153,7 +168,7 @@ class Plot(Widget):
                 self.__figure.subplots_adjust()
 
         def __subplot_new(self, subplot):
-                subplot.axes_new(self.__figure, len(self.__subplots))
+                subplot.axes_new(self.__figure, self.__canvas, len(self.__subplots))
 
                 self.__subplots.append(subplot)
                 self.__reset()
@@ -166,17 +181,17 @@ class Plot(Widget):
                 self.__subplots.remove(subplot)
                 self.__reset()
 
-        def subplot_new(self, *args, **kwargs):
-                return self.__subplot_new(SubPlot(*args, **kwargs))
+        def subplot_new(self):
+                return self.__subplot_new(SubPlot())
 
         def subplot_delete(self, subplot):
                 self.__subplot_delete(subplot)
 
-        def stripchart_new(self, *args, **kwargs):
-                return self.__subplot_new(StripChart(*args, **kwargs))
+        def stripchart_new(self):
+                return self.__subplot_new(StripChart())
 
-        def stripchart_delete(self, subplot):
-                self.__subplot_delete(subplot)
+        def stripchart_delete(self, stripchart):
+                self.__subplot_delete(stripchart)
 
         def __save(self, filename):
                 if not filename:
