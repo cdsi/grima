@@ -133,9 +133,10 @@ class StripChart(SubPlot, Playable):
                                 x.append(__x)
                                 y.append(__y)
                                 
+                                gtk.gdk.threads_enter()
                                 self.plotl(x, y)
-
-                        self.draw()
+                                self.draw()
+                                gtk.gdk.threads_leave()
 
                         time.sleep(interval)
 
