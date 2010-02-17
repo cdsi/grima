@@ -13,16 +13,28 @@ y = np.sin(2 * np.pi * x)
 z = np.cos(2 * np.pi * x)
 
 def callback1():
-        i = 0
+        __x = None
+        __y = None
+
         while True:
-                yield [(x[i], y[i])]
-                i += 1
+                if not __x:
+                        __x = list(x)
+                if not __y:
+                        __y = list(y)
+
+                yield [(__x.pop(0), __y.pop(0))]
 
 def callback2():
-        i = 0
+        __x = None
+        __z = None
+
         while True:
-                yield [(x[i], z[i])]
-                i += 1
+                if not __x:
+                        __x = list(x)
+                if not __z:
+                        __z = list(z)
+
+                yield [(__x.pop(0), __z.pop(0))]
 
 op = OptionParser('%prog [options]')
 
@@ -49,13 +61,13 @@ window.title = options.title
 window.deletable = options.deletable
 
 stripchart1 = plot.stripchart_new()
-stripchart1.limitsl = [0, 10, -2, 2]
+stripchart1.limitsl = [0, 10, -1, 1]
 
 stripchart2 = plot.stripchart_new()
-stripchart2.limitsl = [0, 20, -2, 2]
+stripchart2.limitsl = [0, 20, -1, 1]
 
-stripchart1.play(callback1, interval=2/10)
-stripchart2.play(callback2, interval=1/10)
+stripchart1.play(callback1, interval=2/100)
+stripchart2.play(callback2, interval=1/100)
 
 window.show()
 window.run()
