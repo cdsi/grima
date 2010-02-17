@@ -36,7 +36,8 @@ subplot2.plotl(x, y, color=0x00FF00, style='--')
 subplot2.plotl(x, z, color=0x0000FF, style='--')
 
 subplot3 = plot.subplot_new()
-subplot3.limitsl = [-3, 6, 0, 100]
+subplot3.xlimitsl = [-3, 6]
+subplot3.ylimitsl = [0, 100]
 subplot3.plotl(x, y + z, xlabel='X Label', ylabel='Y Label')
 
 subplot2.draw()

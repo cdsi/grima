@@ -26,11 +26,13 @@ from elrond.util import APINotImplemented, Object, Property
 
 class SubPlot(Widget):
 
-        def __set_limits(self, axes, limits):
+        def __set_limits(self, axes, xlimits, ylimits):
                 axes.axis('auto')
 
-                if filter(lambda x: x != 0, limits):
-                        axes.axis(limits)
+                if xlimits[0] or xlimits[1]:
+                        axes.set_xlim(xlimits)
+                if ylimits[0] or ylimits[1]:
+                        axes.set_ylim(ylimits)
 
         def __plot__(self, axes, xlabel, ylabel):
                 if not self.overlay:
@@ -96,10 +98,10 @@ class SubPlot(Widget):
 
         def draw(self):
                 axl = self.__axes['axl']
-                self.__set_limits(axl, self.limitsl)
+                self.__set_limits(axl, self.xlimitsl, self.ylimitsl)
 
                 # TODO: axr = self.__axes['axr']
-                # TODO: self.__set_limits(axr, self.limitsr)
+                # TODO: self.__set_limits(axr, self.xlimitsr, self.ylimitsr)
 
                 self.__canvas.draw()
 
@@ -117,16 +119,18 @@ class SubPlot(Widget):
         def __init__(self):
                 Widget.__init__(self)
 
-                self.limitsl = []
-                self.limitsr = []
+                self.xlimitsl = [0, 0]
+                self.xlimitsr = [0, 0]
+                self.ylimitsl = [0, 0]
+                self.ylimitsr = [0, 0]
 
                 self.overlay = True
 
 class StripChart(SubPlot, Playable):
 
         def __tasklette(self, producer, interval=1, duration=60):
-                self.limitsl[0] = 0
-                self.limitsl[1] = duration
+                self.xlimitsl[0] = 0
+                self.xlimitsl[1] = duration
 
                 x = [0, 0]
                 y = [0, 0]
@@ -137,8 +141,8 @@ class StripChart(SubPlot, Playable):
                         elapsed = time.time() - offset
 
                         if elapsed > duration:
-                                self.limitsl[0] += elapsed - x[1]
-                                self.limitsl[1] += elapsed - x[1]
+                                self.xlimitsl[0] += elapsed - x[1]
+                                self.xlimitsl[1] += elapsed - x[1]
 
                         x[1] = elapsed
 
