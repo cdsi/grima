@@ -60,8 +60,8 @@ stripchart1.limitsl = [0, 10, -1, 1]
 stripchart2 = plot.stripchart_new()
 stripchart2.limitsl = [0, 20, -1, 1]
 
-stripchart1.play(callback1, interval=2/100)
-stripchart2.play(callback2, interval=1/100)
+stripchart1.play(callback1, interval=.5000, duration=10)
+stripchart2.play(callback2, interval=.0001, duration=10)
 
 window.show()
 window.run()
