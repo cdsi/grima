@@ -124,19 +124,35 @@ class SubPlot(Widget):
 
 class StripChart(SubPlot, Playable):
 
-        def __tasklette(self, callback, interval=1, duration=60):
-                x = []
-                y = []
+        def __tasklette(self, producer, interval=1, duration=60):
+                self.limitsl[0] = 0
+                self.limitsl[1] = duration
 
-                for data in callback():
-                        for __x, __y in data:
-                                x.append(__x)
-                                y.append(__y)
+                x = [0, 0]
+                y = [0, 0]
+
+                offset = time.time()
+
+                for data in producer():
+                        elapsed = time.time() - offset
+
+                        if elapsed > duration:
+                                self.limitsl[0] += elapsed - x[1]
+                                self.limitsl[1] += elapsed - x[1]
+
+                        x[1] = elapsed
+
+                        for __y in data:
+                                y[1] = __y
                                 
                                 gtk.gdk.threads_enter()
                                 self.plotl(x, y)
                                 self.draw()
                                 gtk.gdk.threads_leave()
+
+                                y[0] = y[1]
+
+                        x[0] = x[1]
 
                         time.sleep(interval)
 

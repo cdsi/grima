@@ -13,28 +13,22 @@ y = np.sin(2 * np.pi * x)
 z = np.cos(2 * np.pi * x)
 
 def callback1():
-        __x = None
-        __y = None
+        __y = []
 
         while True:
-                if not __x:
-                        __x = list(x)
                 if not __y:
                         __y = list(y)
 
-                yield [(__x.pop(0), __y.pop(0))]
+                yield [(__y.pop(0))]
 
 def callback2():
-        __x = None
-        __z = None
+        __z = []
 
         while True:
-                if not __x:
-                        __x = list(x)
                 if not __z:
                         __z = list(z)
 
-                yield [(__x.pop(0), __z.pop(0))]
+                yield [(__z.pop(0))]
 
 op = OptionParser('%prog [options]')
 
