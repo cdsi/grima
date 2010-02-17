@@ -12,7 +12,7 @@ x = np.arange(0, 3, .02)
 y = np.sin(2 * np.pi * x)
 z = np.cos(2 * np.pi * x)
 
-def callback1():
+def producer1():
         __y = []
 
         while True:
@@ -21,7 +21,7 @@ def callback1():
 
                 yield [(__y.pop(0))]
 
-def callback2():
+def producer2():
         __z = []
 
         while True:
@@ -60,8 +60,8 @@ stripchart1.ylimitsl = [-1, 1]
 stripchart2 = plot.stripchart_new()
 stripchart2.ylimitsl = [-1, 1]
 
-stripchart1.play(callback1, interval=.5000, duration=10)
-stripchart2.play(callback2, interval=.0001, duration=10)
+stripchart1.play(producer1, interval=.5000, duration=10)
+stripchart2.play(producer2, interval=.0001, duration=10)
 
 window.show()
 window.run()
