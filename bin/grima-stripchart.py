@@ -61,7 +61,7 @@ stripchart2 = plot.stripchart_new()
 stripchart2.ylimitsl = [-1, 1]
 
 stripchart1.play(producer1, interval=.5000, duration=10)
-stripchart2.play(producer2, interval=.0001, duration=10)
+stripchart2.play(producer2, interval=.0001, duration=50)
 
 window.show()
 window.run()
