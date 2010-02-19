@@ -43,7 +43,7 @@ if [ "${EVERYTHING}" = "1" ] || [ "${BACKENDS}" = "1" ]; then
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_PYTHON}" = "1" ]; then
-	${GRIMA_BIN}/python.sh setup.py test
+        nosetests --with-xunit --with-coverage --cover-erase --cover-html --cover-package=grima -w "${GRIMA_SRC}"/python/grima
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_JAVA}" = "1" ]; then
