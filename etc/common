@@ -7,6 +7,9 @@ export GRIMA_HOME
 GRIMA_BIN="${GRIMA_HOME}"/bin
 export GRIMA_BIN
 
+GRIMA_DOC="${GRIMA_HOME}"/docs
+export GRIMA_DOC
+
 GRIMA_ETC="${GRIMA_HOME}"/etc
 export GRIMA_ETC
 
@@ -39,6 +42,9 @@ export GRIMA_RUN
 
 GRIMA_WWW="${GRIMA_VAR}"/www
 export GRIMA_WWW
+
+GRIMA_REF="${GRIMA_DOC}"/ref
+export GRIMA_REF
 
 GRIMA_CONFIGUREFLAGS="--prefix=${GRIMA_HOME}" 
 export GRIMA_CONFIGUREFLAGS

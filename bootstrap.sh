@@ -5,6 +5,7 @@ GRIMA_HOME=$(dirname $0)
 
 cd ${GRIMA_HOME}
 
+gtkdocize --copy --flavour no-tmpl
 libtoolize --automake --copy --force
 aclocal ${ACLOCALFLAGS} ${GRIMA_ACLOCALFLAGS}
 autoheader
