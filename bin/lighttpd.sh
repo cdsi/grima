@@ -21,7 +21,6 @@ case "${OPTION}" in
 	[ -f ${GRIMA_RUN}/lighttpd.pid ] && \
 	    kill $(cat ${GRIMA_RUN}/lighttpd.pid)
 	;;
-                
     *make-cert)
 	/usr/sbin/make-ssl-cert /usr/share/ssl-cert/ssleay.cnf \
 	    ${GRIMA_ETC}/lighttpd.pem --force-overwrite
