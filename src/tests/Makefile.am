@@ -1,3 +1,1 @@
 include $(top_srcdir)/share/Makefile.decl
-
-SUBDIRS = ref tests

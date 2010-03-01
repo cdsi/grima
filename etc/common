@@ -104,6 +104,12 @@ export GRIMA_MAKEFLAGS
 GRIMA_PYTHONFLAGS=
 export GRIMA_PYTHONFLAGS
 
+GRIMA_PYLINTFLAGS=--rcfile="${GRIMA_ETC}"/pylintrc
+export GRIMA_PYLINTFLAGS
+
+GRIMA_NOSETESTSFLAGS="--xunit-file=${GRIMA_HOME}/test-report-python.xml --cover-html --cover-package=grima -w ${GRIMA_SRC}/python/grima"
+export GRIMA_NOSETESTSFLAGS
+
 GRIMA_JAVAFLAGS="-Dgrima.home=${GRIMA_HOME} \
 	-Djava.util.logging.config.file=${GRIMA_ETC}/grima.properties"
 export GRIMA_JAVAFLAGS

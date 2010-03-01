@@ -39,11 +39,11 @@ esac
 cd ${GRIMA_HOME}
 
 if [ "${EVERYTHING}" = "1" ] || [ "${BACKENDS}" = "1" ]; then
-	true # TODO:
+        "${GRIMA_BIN}"/make.sh coverage-report # TODO: test-report
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_PYTHON}" = "1" ]; then
-        nosetests --with-xunit --with-coverage --cover-erase --cover-html --cover-package=grima -w "${GRIMA_SRC}"/python/grima
+        "${GRIMA_BIN}"/nosetests.sh
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1
 fi
 if [ "${EVERYTHING}" = "1" ] || [ "${JUST_JAVA}" = "1" ]; then
