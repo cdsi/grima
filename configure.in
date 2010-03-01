@@ -51,5 +51,7 @@ AC_CONFIG_FILES([
         setup.py
         Makefile
         src/Makefile
+        src/ref/Makefile
+        src/tests/Makefile
 ])
 AC_OUTPUT
