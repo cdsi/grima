@@ -9,7 +9,9 @@ from grima.couchdb import CouchDB
 op = OptionParser('%prog [options]')
 
 op.add_option('--title', action='store', dest='title', default=None,
-              help='title to be used in plot window')
+              help='title to be used in couchdb window')
+op.add_option('--deletable', action='store', dest='deletable', default=True,
+              help='When disabled the couchdb window is not closable.')
 
 (options, args) = op.parse_args()
 
@@ -17,6 +19,7 @@ couchdb = CouchDB()
 
 window = Window(widget=couchdb)
 window.title = options.title
+window.deletable = options.deletable
 
 window.show()
 window.run()
