@@ -5,7 +5,12 @@ GRIMA_HOME=$(dirname $0)
 
 cd ${GRIMA_HOME}
 
-gtkdocize --copy --flavour no-tmpl
+GTKDOCSIZE="$(which gtkdocize 2> /dev/null)"
+if [ -x "${GTKDOCSIZE}" ]; then
+        "${GTKDOCSIZE}" --copy --flavour no-tmpl
+else
+        echo "EXTRA_DIST=" > "${ELROND_HOME}"/gtk-doc.make
+fi
 libtoolize --automake --copy --force
 aclocal ${ACLOCALFLAGS} ${GRIMA_ACLOCALFLAGS}
 autoheader
