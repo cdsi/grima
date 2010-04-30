@@ -34,14 +34,17 @@ class SubPlot(Widget):
                 if ylimits[0] or ylimits[1]:
                         axes.set_ylim(ylimits)
 
-        def __plot__(self, axes, xlabel, ylabel):
-                if not self.overlay:
-                        self.clear()
-
+        def __set_labels(self, axes, xlabel, ylabel):
                 if xlabel:
                         axes.set_xlabel(xlabel)
                 if ylabel:
                         axes.set_ylabel(ylabel)
+
+        def __plot__(self, axes, xlabel, ylabel):
+                if not self.overlay:
+                        self.clear()
+
+                self.__set_labels(axes, xlabel, ylabel)
 
                 axes.grid(True)
 
@@ -99,9 +102,11 @@ class SubPlot(Widget):
         def draw(self):
                 axl = self.__axes['axl']
                 self.__set_limits(axl, self.xlimitsl, self.ylimitsl)
+                self.__set_labels(axl, self.xlabel, self.ylabel)
 
                 # TODO: axr = self.__axes['axr']
                 # TODO: self.__set_limits(axr, self.xlimitsr, self.ylimitsr)
+                # TODO: self.__set_labels(axr, self.xlabel, self.ylabel)
 
                 self.__canvas.draw()
 
@@ -123,6 +128,9 @@ class SubPlot(Widget):
                 self.xlimitsr = [0, 0]
                 self.ylimitsl = [0, 0]
                 self.ylimitsr = [0, 0]
+
+                self.xlabel = ''
+                self.ylabel = ''
 
                 self.overlay = True
 
