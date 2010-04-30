@@ -180,8 +180,8 @@ class Plot(Widget):
                         return self.prefs['overlay'].enabled
 
                 def fset(self, overlay):
-                        for subplot in self.__subplots:
-                                subplot.overlay = overlay
+                        for plotable in self.__plotables:
+                                plotable.overlay = overlay
 
                         widget = self.builder.get_object('overlay__enabled')
                         widget.set_active(overlay)
@@ -189,38 +189,38 @@ class Plot(Widget):
                 return locals()
 
         def __reset(self):
-                nsubplots = len(self.__subplots)
+                nplotables = len(self.__plotables)
 
-                for i, subplot in enumerate(self.__subplots):
-                        subplot.reset(nsubplots, i)
+                for i, plotable in enumerate(self.__plotables):
+                        plotable.reset(nplotables, i)
 
                 self.__figure.subplots_adjust()
 
-        def __subplot_new(self, subplot):
-                subplot.axes_new(self.__figure, self.__canvas, len(self.__subplots))
+        def __plotable_new(self, plotable):
+                plotable.axes_new(self.__figure, self.__canvas, len(self.__plotables))
 
-                self.__subplots.append(subplot)
+                self.__plotables.append(plotable)
                 self.__reset()
 
-                return subplot
+                return plotable
 
-        def __subplot_delete(self, subplot):
-                subplot.axes_delete(self.__figure)
+        def __plotable_delete(self, plotable):
+                plotable.axes_delete(self.__figure)
 
-                self.__subplots.remove(subplot)
+                self.__plotables.remove(plotable)
                 self.__reset()
 
         def subplot_new(self):
-                return self.__subplot_new(SubPlot())
+                return self.__plotable_new(SubPlot())
 
-        def subplot_delete(self, subplot):
-                self.__subplot_delete(subplot)
+        def subplot_delete(self, plotable):
+                self.__plotable_delete(plotable)
 
         def stripchart_new(self):
-                return self.__subplot_new(StripChart())
+                return self.__plotable_new(StripChart())
 
         def stripchart_delete(self, stripchart):
-                self.__subplot_delete(stripchart)
+                self.__plotable_delete(stripchart)
 
         def __save(self, filename):
                 if not filename:
@@ -232,8 +232,8 @@ class Plot(Widget):
                         fd.write(self.__buffer.get_text(*self.__buffer.get_bounds()))
 
         def clear(self):
-                for subplot in self.__subplots:
-                        subplot.clear()
+                for plotable in self.__plotables:
+                        plotable.clear()
 
                 self.__reset()
 
@@ -288,7 +288,7 @@ class Plot(Widget):
                 container.add(widget)
 
                 self.__filename = None
-                self.__subplots = []
+                self.__plotables = []
 
                 self.__chooser = SaveAs()
                 self.__chooser.deletable = False
