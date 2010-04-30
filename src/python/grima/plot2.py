@@ -36,9 +36,11 @@ class SubPlot(Widget):
 
         def __set_labels(self, axes, xlabel, ylabel):
                 if xlabel:
-                        axes.set_xlabel(xlabel)
+                        # axes.set_xlabel(xlabel)
+                        pass
                 if ylabel:
-                        axes.set_ylabel(ylabel)
+                        # axes.set_ylabel(ylabel)
+                        pass
 
         def __plot__(self, axes, xlabel, ylabel):
                 if not self.overlay:
