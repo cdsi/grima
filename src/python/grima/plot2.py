@@ -26,6 +26,26 @@ from elrond.util import APINotImplemented, Object, Property
 
 class SubPlot(Widget):
 
+        @Property
+        def axl():
+                def fget(self):
+                        return self.__axes['axl']
+
+                def fset(self, value):
+                        pass
+
+                return locals()
+
+        @Property
+        def axr():
+                def fget(self):
+                        return self.__axes['axr']
+
+                def fset(self, value):
+                        pass
+
+                return locals()
+
         def __set_limits(self, axes, xlimits, ylimits):
                 axes.axis('auto')
 
