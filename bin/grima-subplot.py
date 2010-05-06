@@ -32,16 +32,28 @@ subplot1 = plot.subplot_new()
 plot.subplot_delete(subplot1)
 
 subplot2 = plot.subplot_new()
+subplot2.xlabel = 'X Label'
+subplot2.ylabel = 'Y Label'
 subplot2.plotl(x, y, color=0x00FF00, style='--')
 subplot2.plotl(x, z, color=0x0000FF, style='--')
+subplot2.draw()
 
 subplot3 = plot.subplot_new()
+subplot3.xlabel = 'X Label'
+subplot3.ylabel = 'Y Label'
 subplot3.xlimitsl = [-3, 6]
 subplot3.ylimitsl = [0, 100]
-subplot3.plotl(x, y + z, xlabel='X Label', ylabel='Y Label')
-
-subplot2.draw()
+subplot3.plotl(x, y + z)
 subplot3.draw()
+
+x, y = np.random.randn(2, 100)
+
+subplot4 = plot.subplot_new()
+axl = subplot4.axl
+axl.xcorr(x, y, usevlines=True, maxlags=50, normed=True, lw=2)
+axl.grid(True)
+axl.axhline(0, color='black', lw=2)
+subplot4.draw()
 
 window.show()
 window.run()
