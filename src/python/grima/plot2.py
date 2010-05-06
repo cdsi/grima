@@ -68,10 +68,10 @@ class SubPlot(Widget):
 
                 axes.grid(True)
 
-        def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
+        def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000, markerfacecolor='None'):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, style, color='#%06X' % (color))
+                axes.plot(x, y, style, color='#%06X' % (color), markerfacecolor=markerfacecolor)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
