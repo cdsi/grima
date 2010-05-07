@@ -73,10 +73,10 @@ class SubPlot(Widget):
                 axes.grid(True)
 
         def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000,\
-		  mec='r', mfc='None', linewidth=1):
+		  mec='r', mfc='None', ms=6, linewidth=1):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, style, color='#%06X' % (color), mec=mec, mfc=mfc, linewidth=linewidth)
+                axes.plot(x, y, style, color='#%06X' % (color), mec=mec, mfc=mfc, ms=ms, linewidth=linewidth)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -87,6 +87,16 @@ class SubPlot(Widget):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.axvline(x, ls=style, color='#%06X' % (color))
+
+        def text(self, x, y, s, fontsize=12, backgroundcolor='w', va='bottom', ha='left', transform=False):
+                axes=self.__axes['axl']
+
+                if transform:
+                        axes.text(x, y, s, fontsize=fontsize, backgroundcolor=backgroundcolor, \
+                                  va=va, ha=ha, transform = axes.transAxes)
+                else:
+                        axes.text(x, y, s, fontsize=fontsize, backgroundcolor=backgroundcolor, \
+                                  va=va, ha=ha)
 
         @APINotImplemented
         def plotr(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
