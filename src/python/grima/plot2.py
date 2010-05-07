@@ -46,6 +46,10 @@ class SubPlot(Widget):
 
                 return locals()
 
+        def __set_title(self, axes, title):
+                if title:
+                        axes.set_title(title)
+
         def __set_limits(self, axes, xlimits, ylimits):
                 axes.axis('auto')
 
@@ -68,10 +72,11 @@ class SubPlot(Widget):
 
                 axes.grid(True)
 
-        def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000, markerfacecolor='None'):
+        def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000,\
+		  mec='r', mfc='None', linewidth=1):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, style, color='#%06X' % (color), markerfacecolor=markerfacecolor)
+                axes.plot(x, y, style, color='#%06X' % (color), mec=mec, mfc=mfc, linewidth=linewidth)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -123,6 +128,7 @@ class SubPlot(Widget):
                 axl = self.__axes['axl']
                 self.__set_limits(axl, self.xlimitsl, self.ylimitsl)
                 self.__set_labels(axl, self.xlabel, self.ylabel)
+                self.__set_title(axl, self.title)
 
                 # TODO: axr = self.__axes['axr']
                 # TODO: self.__set_limits(axr, self.xlimitsr, self.ylimitsr)
@@ -143,6 +149,8 @@ class SubPlot(Widget):
 
         def __init__(self):
                 Widget.__init__(self)
+
+                self.title = None
 
                 self.xlimitsl = [0, 0]
                 self.xlimitsr = [0, 0]
@@ -214,7 +222,7 @@ class Plot(Widget):
                 for i, plotable in enumerate(self.__plotables):
                         plotable.reset(nplotables, i)
 
-                self.__figure.subplots_adjust()
+                self.__figure.subplots_adjust(hspace = 0.5)
 
         def __plotable_new(self, plotable):
                 plotable.axes_new(self.__figure, self.__canvas, len(self.__plotables))
