@@ -70,7 +70,7 @@ export PATH
 LD_LIBRARY_PATH="${GRIMA_LIB}":"${LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH
 
-PYTHONPATH="${GRIMA_LIB}"/python:"${PYTHONPATH}"
+PYTHONPATH="${GRIMA_LIB}":"${GRIMA_LIB}"/python:"${PYTHONPATH}"
 export PYTHONPATH
 
 if [ -d "${GRIMA_HOME}"/dist ]; then
