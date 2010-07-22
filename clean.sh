@@ -3,11 +3,6 @@
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common
 
-for extra in ${GRIMA_EXTRAS}; do
-	${extra}/clean.sh "$@"
-	[ $? != 0 ] && echo "ERROR!!!" && exit 1
-done
-
 EVERYTHING=1
 OPTION=$1
 

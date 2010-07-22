@@ -3,11 +3,6 @@
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common
 
-for extra in ${GRIMA_EXTRAS}; do
-	${extra}/build.sh "$@"
-	[ $? != 0 ] && echo "ERROR!!!" && exit 1
-done
-
 if [ -x ${GRIMA_HOME}/build-local.sh ]; then
 	${GRIMA_HOME}/build-local.sh
 	[ $? != 0 ] && echo "ERROR!!!" && exit 1

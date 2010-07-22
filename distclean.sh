@@ -3,11 +3,6 @@
 GRIMA_HOME=$(dirname $0)
 . ${GRIMA_HOME}/etc/common
 
-for extra in ${GRIMA_EXTRAS}; do
-	${extra}/distclean.sh "$@"
-	[ $? != 0 ] && echo "ERROR!!!" && exit 1
-done
-
 DISTCLEAN="$(cat ${GRIMA_HOME}/distclean.list | sed -e 's/ /xYz/g')"
 
 for x in ${DISTCLEAN}; do
