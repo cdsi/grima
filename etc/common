@@ -101,7 +101,6 @@ for extra in ${EXTRAS}; do
 
         LOCATIONS=" \
                 $(cd "${GRIMA_HOME}"/../..; pwd) \
-                $(cd "${GRIMA_HOME}"/..; pwd) \
                 /opt \
         "
 
