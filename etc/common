@@ -14,9 +14,6 @@ export GRIMA_ETC
 GRIMA_LIB="${GRIMA_HOME}"/lib
 export GRIMA_LIB
 
-GRIMA_SHARE="${GRIMA_HOME}"/share
-export GRIMA_SHARE
-
 GRIMA_SRC="${GRIMA_HOME}"/src
 export GRIMA_SRC
 
@@ -95,13 +92,38 @@ if [ -d "${GRIMA_LIB}"/java ]; then
 	done
 fi
 
-DEPENDS_HOME="${GRIMA_SHARE}"
-. "${DEPENDS_HOME}"/depends
+GRIMA_EXTRAS=
+
+EXTRAS="$(cat "${GRIMA_HOME}"/.extras)"
+
+for extra in ${EXTRAS}; do
+        TOPLEVEL=
+
+        LOCATIONS=" \
+                $(cd "${GRIMA_HOME}"/../..; pwd) \
+                $(cd "${GRIMA_HOME}"/..; pwd) \
+                /opt \
+        "
+
+        for location in ${LOCATIONS}; do
+                if [ -d "${location}/${extra}" ]; then
+                        TOPLEVEL="${location}/${extra}"
+                fi
+        done
+
+        GRIMA_EXTRAS=" \
+                ${GRIMA_EXTRAS} \
+                ${TOPLEVEL} \
+        "
+        export GRIMA_EXTRAS
+
+        . "${TOPLEVEL}"/etc/common
+done
 
 GRIMA_SVNFLAGS=
 export GRIMA_SVNFLAGS
 
-GRIMA_ACLOCALFLAGS="-I ${DEPENDS_HOME}/aclocal"
+GRIMA_ACLOCALFLAGS="-I ${SAM_SHARE}/aclocal"
 export GRIMA_ACLOCALFLAGS
 
 GRIMA_MAKEFLAGS=
@@ -122,34 +144,6 @@ export GRIMA_JAVAFLAGS
 
 GRIMA_ANTFLAGS=
 export GRIMA_ANTFLAGS
-
-GRIMA_EXTRAS=
-
-EXTRAS="$(cat "${GRIMA_HOME}"/.extras)"
-
-for extra in ${EXTRAS}; do
-        TOPLEVEL=
-
-        LOCATIONS=" \
-                ${GRIMA_HOME}/extras/ \
-                $(cd "${GRIMA_HOME}"/..; pwd) \
-                /opt \
-        "
-
-        for location in ${LOCATIONS}; do
-                if [ -d "${location}/${extra}" ]; then
-                        TOPLEVEL="${location}/${extra}"
-                fi
-        done
-
-        GRIMA_EXTRAS=" \
-                ${GRIMA_EXTRAS} \
-                ${TOPLEVEL} \
-        "
-        export GRIMA_EXTRAS
-
-        . "${TOPLEVEL}"/etc/common
-done
 
 # $Id:$
 #
