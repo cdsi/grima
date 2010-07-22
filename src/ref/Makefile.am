@@ -1,1 +1,1 @@
-include $(top_srcdir)/share/Makefile.decl
+include $(top_srcdir)/share/Makefile.include
