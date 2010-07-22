@@ -94,7 +94,7 @@ fi
 
 GRIMA_EXTRAS=
 
-EXTRAS="$(cat "${GRIMA_HOME}"/.extras)"
+EXTRAS="$(cat "${GRIMA_HOME}"/extras)"
 
 for extra in ${EXTRAS}; do
         TOPLEVEL=
