@@ -1,5 +1,5 @@
 aclocal.m4
-autom4te.cache
+autom4te.cache/
 config.guess
 config.log
 config.status
@@ -23,9 +23,9 @@ src/include/grima_config.h.in
 src/include/stamp-h1
 src/Makefile
 src/Makefile.in
-src/python/grima/cover
+src/python/grima/cover/
 src/python/grima/.coverage
-src/python/grima.egg-info
+src/python/grima.egg-info/
 src/python/grima/__init__.pyc
 src/python/grima/test.pyc
 src/python/grima/www/__init__.pyc
