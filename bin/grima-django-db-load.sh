@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec grima-django-manage.sh loaddata "${GRIMA_DATA}"/grima-django-load.json
+exec grima-django-manage.sh loaddata "${GRIMA_DB}"/grima-django-db.json
