@@ -19,7 +19,7 @@ import numpy
 import gtk
 
 # our own libraries
-from elrond.macros import clamp
+from elrond.static import *
 from elrond.util import APINotImplemented, Object, Property
 
 def parse(f):
