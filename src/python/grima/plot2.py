@@ -98,6 +98,15 @@ class SubPlot(Widget):
                         axes.text(x, y, s, fontsize=fontsize, backgroundcolor=backgroundcolor, \
                                   va=va, ha=ha)
 
+        def blankticks(self):
+                axes = self.__axes['axl']
+                axes.set_xticklabels([], visible=False)
+                axes.set_yticklabels([], visible=False)
+
+        def addcollection(self, collection):
+                axes = self.__axes['axl']
+                axes.add_collection(collection)
+
         @APINotImplemented
         def plotr(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
                 axes = self.__axes['axr']
