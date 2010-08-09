@@ -20,7 +20,7 @@ from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationT
 import gtk
 
 # our own libraries
-from elrond.macros import clamp
+from elrond.static import *
 from elrond.ui import Widget, Playable, SaveAs
 from elrond.util import APINotImplemented, Object, Property
 
