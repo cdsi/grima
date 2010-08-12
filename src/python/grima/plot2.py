@@ -98,6 +98,14 @@ class SubPlot(Widget):
                         axes.text(x, y, s, fontsize=fontsize, backgroundcolor=backgroundcolor, \
                                   va=va, ha=ha)
 
+        def grid(self, grid):
+                axes=self.__axes['axl']
+                axes.grid(grid)
+
+        def annotate(self, text, xy, family, va):
+                axes=self.__axes['axl']
+                axes.annotate(text, xy, family=family, va=va)
+
         def blankticks(self):
                 axes = self.__axes['axl']
                 axes.set_xticklabels([], visible=False)
