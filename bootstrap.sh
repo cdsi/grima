@@ -9,7 +9,7 @@ GTKDOCSIZE="$(which gtkdocize 2> /dev/null)"
 if [ -x "${GTKDOCSIZE}" ]; then
         "${GTKDOCSIZE}" --copy --flavour no-tmpl
 else
-        echo "EXTRA_DIST=" > "${ELROND_HOME}"/gtk-doc.make
+        echo "EXTRA_DIST=" > "${GRIMA_HOME}"/gtk-doc.make
 fi
 libtoolize --automake --copy --force
 aclocal ${ACLOCALFLAGS} ${GRIMA_ACLOCALFLAGS}
