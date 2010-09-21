@@ -337,7 +337,7 @@ class Plot(Widget):
                 widget.show()
 
                 widget.pack_start(self.__canvas)
-                widget.pack_start(self.__toolbar, False, False)
+                #widget.pack_start(self.__toolbar, False, False)
 
                 container = self.builder.get_object('container')
                 container.add(widget)
