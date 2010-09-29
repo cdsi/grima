@@ -1,3 +1,3 @@
 include $(top_srcdir)/share/Makefile.include
 
-SUBDIRS = ref tests
+SUBDIRS = include ref tests

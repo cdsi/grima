@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <glade-catalog library="gladepython" depends="gtk+" domain="glade-3" name="GrimaWidgets">
-  
+
   <init-function>glade_python_init</init-function>
-  
+
   <glade-widget-classes>
     <glade-widget-class generic-name="PlotWidget" name="PlotWidget"
                         title="Plot Widget"/>
   </glade-widget-classes>
-  
+
   <glade-widget-group name="Grima" title="Grima">
     <glade-widget-class-ref name="PlotWidget"/>
   </glade-widget-group>

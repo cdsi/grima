@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec python.sh ${NOSETESTS} ${NOSETESTSFLAGS} ${GRIMA_NOSETESTSFLAGS} "$@"
+exec "${GRIMA_BIN}"/python.sh ${NOSETESTS} ${NOSETESTSFLAGS} ${GRIMA_NOSETESTSFLAGS} "$@"

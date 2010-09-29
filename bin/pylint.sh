@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec python.sh ${PYLINT} ${PYLINTFLAGS} ${GRIMA_PYLINTFLAGS} "$@"
+exec "${GRIMA_BIN}"/python.sh ${PYLINT} ${PYLINTFLAGS} ${GRIMA_PYLINTFLAGS} "$@"
