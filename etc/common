@@ -119,9 +119,6 @@ for extra in ${EXTRAS}; do
         . "${TOPLEVEL}"/etc/common
 done
 
-GRIMA_ACLOCALFLAGS="-I ${SAM_SHARE}/aclocal"
-export GRIMA_ACLOCALFLAGS
-
 GRIMA_MAKEFLAGS=
 export GRIMA_MAKEFLAGS
 
