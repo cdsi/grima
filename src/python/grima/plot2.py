@@ -16,6 +16,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationToolbar
 
+from mpl_toolkits.mplot3d import Axes3D
+
 # www.gtk.org
 import gtk
 
@@ -282,6 +284,12 @@ class Plot(Widget):
         def stripchart_delete(self, stripchart):
                 self.__plotable_delete(stripchart)
 
+        def plot3d_new(self):
+                return self.__plotable_new(Plot3D())
+
+        def plot3d_delete(self, plot3d):
+                self.__plotable_delete(plot3d)
+
         def __save(self, filename):
                 if not filename:
                         return
@@ -354,6 +362,44 @@ class Plot(Widget):
                 self.__chooser.deletable = False
                 self.__chooser.embedded = True
                 self.__chooser.callback = self.__save
+
+class Plot3D(SubPlot):
+
+        def axes_new(self, figure, canvas, nsubplots):
+                axl = Axes3D(figure)
+                axr = None # TODO: axl.twinx()
+
+                self.__axes = {'axl': axl, 'axr': axr}
+
+                self.__canvas = canvas
+
+        def reset(self, nsubplots, i):
+                axl = self.__axes['axl']
+                axr = self.__axes['axr']
+
+                axl.grid(True)
+                axl.yaxis.set_label_position('left')
+                axl.yaxis.tick_left()
+
+        def draw(self):
+                self.__canvas.draw()
+
+        def plotl(self, x, y, z, xlabel=None, ylabel=None, label=None):
+                axes = self.__axes['axl']
+                self.__plot__(axes, xlabel, ylabel)
+                axes.plot(x, y, z, label=label)
+                try:
+                        axes.legend(numpoints=1)
+                except:
+                        pass
+
+        def __init__(self):
+                SubPlot.__init__(self)
+
+                self.zlimitsl = [0, 0]
+                self.zlimitsr = [0, 0]
+
+                self.zlabel = ''
 
 # $Id:$
 #
