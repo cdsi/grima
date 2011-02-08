@@ -75,15 +75,17 @@ class SubPlot(Widget):
                 axes.grid(True)
 
         def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000,\
-		  mec='r', mfc='None', mew=1, ms=6, linewidth=1, label=None):
+		  mec='r', mfc='None', mew=1, ms=6, linewidth=1, label=None, picker=None):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                          mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label)
-                try:
+
+                if label:
+                        axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                  mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
                         axes.legend(numpoints=1)
-                except:
-                        pass
+                else:
+                        axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                  mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, picker=picker)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -332,6 +334,9 @@ class Plot(Widget):
 
         def on_clear(self, widget):
                 self.clear()
+
+        def connect(self, event, function):
+                self.__figure.canvas.mpl_connect(event, function)
 
         def __init__(self):
                 Widget.__init__(self)
