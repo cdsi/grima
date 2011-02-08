@@ -13,8 +13,8 @@ import time
 
 # matplotlib.sf.net
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationToolbar
+from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
+from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -123,6 +123,10 @@ class SubPlot(Widget):
         def addcollection(self, collection):
                 axes = self.__axes['axl']
                 axes.add_collection(collection)
+
+        def get_limits(self):
+                axes = self.__axes['axl']
+                return axes.get_xlim() + axes.get_ylim()
 
         @APINotImplemented
         def plotr(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
