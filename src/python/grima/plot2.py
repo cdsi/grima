@@ -80,12 +80,14 @@ class SubPlot(Widget):
                 self.__plot__(axes, xlabel, ylabel)
 
                 if label:
-                        axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                                  mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
+                        pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                        mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
                         axes.legend(numpoints=1)
                 else:
-                        axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                                  mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, picker=picker)
+                        pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                        mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, picker=picker)
+
+                return pl
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -256,6 +258,20 @@ class Plot(Widget):
 
                 return locals()
 
+        @Property
+        def canvas():
+                def fget(self):
+                        return self.__canvas
+
+                return locals()
+
+        @Property
+        def toolbar():
+                def fget(self):
+                        return self.__toolbar
+
+                return locals()
+
         def __reset(self):
                 nplotables = len(self.__plotables)
 
@@ -339,9 +355,6 @@ class Plot(Widget):
         def on_clear(self, widget):
                 self.clear()
 
-        def connect(self, event, function):
-                self.__figure.canvas.mpl_connect(event, function)
-
         def __init__(self):
                 Widget.__init__(self)
 
@@ -409,6 +422,105 @@ class Plot3D(SubPlot):
                 self.zlimitsr = [0, 0]
 
                 self.zlabel = ''
+
+class Cursor:
+        def __init__(self, ax, plot):
+                self.ax = ax
+                self.canvas = plot.canvas
+
+                self.plot = plot
+
+                self.lx = self.ax.axhline(color='r', linewidth=2)
+                self.ly = self.ax.axvline(color='r', linewidth=2)
+
+                self.hide()
+
+                self.txt = ax.text(0.7, 0.9, '', transform=self.ax.transAxes)
+
+                self.txt.set_visible(False)
+
+                self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+                self.canvas.mpl_connect('draw_event', self.on_draw)
+                self.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
+                self.restricted = False
+
+        def show(self):
+                self.lx.set_visible(True)
+                self.ly.set_visible(True)
+
+        def hide(self):
+                self.lx.set_visible(False)
+                self.ly.set_visible(False)
+
+        def restrict(self, value):
+                self.restricted = value
+
+        def on_draw(self, event):
+                self.hide()
+                self.ax.draw_artist(self.ax)
+                self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+        def on_motion(self, event):
+                if self.restricted:
+                        return
+
+                if not event.inaxes:
+                        self.hide()
+                        self.canvas.restore_region(self.background)
+                        self.canvas.blit(self.ax.bbox)
+                        return
+
+                self.show()
+
+                self.canvas.restore_region(self.background)
+
+                x, y = event.xdata, event.ydata
+
+                self.lx.set_ydata(y)
+                self.ly.set_xdata(x)
+
+                self.txt.set_text('x=%1.2f, y=%1.2f' % (x,y))
+
+                self.ax.draw_artist(self.lx)
+                self.ax.draw_artist(self.ly)
+                self.ax.draw_artist(self.txt)
+
+                self.canvas.blit(self.ax.bbox)
+
+class SnapCursor(Cursor):
+        def __init__(self, ax, plot, x, y):
+                Cursor.__init__(self, ax, plot)
+
+                self.x = x
+                self.z = zip(x,y)
+
+                self.x.sort()
+                self.z.sort()
+
+        def on_motion(self, event):
+                if self.hidden or not event.inaxes:
+                        return
+
+                self.canvas.restore_region(self.background)
+
+                x, y = event.xdata, event.ydata
+
+                i = np.searchsorted(self.x, x)
+
+                x, y = self.z[i]
+
+                self.lx.set_ydata(y)
+                self.ly.set_xdata(x)
+
+                self.txt.set_text('x=%1.2f, y=%1.2f' % (x,y))
+
+                self.ax.draw_artist(self.lx)
+                self.ax.draw_artist(self.ly)
+                self.ax.draw_artist(self.txt)
+
+                self.canvas.blit(self.ax.bbox)
 
 # $Id:$
 #
