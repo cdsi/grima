@@ -79,15 +79,8 @@ class SubPlot(Widget):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
 
-                if label:
-                        pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                                        mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
-                        axes.legend(numpoints=1)
-                else:
-                        pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                                        mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, picker=picker)
-
-                return pl
+                pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
