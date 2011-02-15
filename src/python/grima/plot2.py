@@ -13,8 +13,10 @@ import time
 
 # matplotlib.sf.net
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.backends.backend_gtk import NavigationToolbar2GTK as NavigationToolbar
+from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas
+from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
+
+from mpl_toolkits.mplot3d import Axes3D
 
 # www.gtk.org
 import gtk
@@ -73,15 +75,12 @@ class SubPlot(Widget):
                 axes.grid(True)
 
         def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000,\
-		  mec='r', mfc='None', mew=1, ms=6, linewidth=1, label=None):
+		  mec='r', mfc='None', mew=1, ms=6, linewidth=1, label=None, picker=None):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                          mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label)
-                try:
-                        axes.legend(numpoints=1)
-                except:
-                        pass
+
+                pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
+                                mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -119,6 +118,10 @@ class SubPlot(Widget):
         def addcollection(self, collection):
                 axes = self.__axes['axl']
                 axes.add_collection(collection)
+
+        def get_limits(self):
+                axes = self.__axes['axl']
+                return axes.get_xlim() + axes.get_ylim()
 
         @APINotImplemented
         def plotr(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
@@ -248,6 +251,20 @@ class Plot(Widget):
 
                 return locals()
 
+        @Property
+        def canvas():
+                def fget(self):
+                        return self.__canvas
+
+                return locals()
+
+        @Property
+        def toolbar():
+                def fget(self):
+                        return self.__toolbar
+
+                return locals()
+
         def __reset(self):
                 nplotables = len(self.__plotables)
 
@@ -281,6 +298,12 @@ class Plot(Widget):
 
         def stripchart_delete(self, stripchart):
                 self.__plotable_delete(stripchart)
+
+        def plot3d_new(self):
+                return self.__plotable_new(Plot3D())
+
+        def plot3d_delete(self, plot3d):
+                self.__plotable_delete(plot3d)
 
         def __save(self, filename):
                 if not filename:
@@ -354,6 +377,143 @@ class Plot(Widget):
                 self.__chooser.deletable = False
                 self.__chooser.embedded = True
                 self.__chooser.callback = self.__save
+
+class Plot3D(SubPlot):
+
+        def axes_new(self, figure, canvas, nsubplots):
+                axl = Axes3D(figure)
+                axr = None # TODO: axl.twinx()
+
+                self.__axes = {'axl': axl, 'axr': axr}
+
+                self.__canvas = canvas
+
+        def reset(self, nsubplots, i):
+                axl = self.__axes['axl']
+                axr = self.__axes['axr']
+
+                axl.grid(True)
+                axl.yaxis.set_label_position('left')
+                axl.yaxis.tick_left()
+
+        def draw(self):
+                self.__canvas.draw()
+
+        def plotl(self, x, y, z, xlabel=None, ylabel=None, label=None):
+                axes = self.__axes['axl']
+                self.__plot__(axes, xlabel, ylabel)
+                axes.plot(x, y, z, label=label)
+                try:
+                        axes.legend(numpoints=1)
+                except:
+                        pass
+
+        def __init__(self):
+                SubPlot.__init__(self)
+
+                self.zlimitsl = [0, 0]
+                self.zlimitsr = [0, 0]
+
+                self.zlabel = ''
+
+class Cursor:
+        def __init__(self, ax, plot):
+                self.ax = ax
+                self.canvas = plot.canvas
+
+                self.plot = plot
+
+                self.lx = self.ax.axhline(color='r', linewidth=2)
+                self.ly = self.ax.axvline(color='r', linewidth=2)
+
+                self.hide()
+
+                self.txt = ax.text(0.7, 0.9, '', transform=self.ax.transAxes)
+
+                self.txt.set_visible(False)
+
+                self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+                self.canvas.mpl_connect('draw_event', self.on_draw)
+                self.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
+                self.restricted = False
+
+        def show(self):
+                self.lx.set_visible(True)
+                self.ly.set_visible(True)
+
+        def hide(self):
+                self.lx.set_visible(False)
+                self.ly.set_visible(False)
+
+        def restrict(self, value):
+                self.restricted = value
+
+        def on_draw(self, event):
+                self.hide()
+                self.ax.draw_artist(self.ax)
+                self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+        def on_motion(self, event):
+                if self.restricted:
+                        return
+
+                if not event.inaxes:
+                        self.hide()
+                        self.canvas.restore_region(self.background)
+                        self.canvas.blit(self.ax.bbox)
+                        return
+
+                self.show()
+
+                self.canvas.restore_region(self.background)
+
+                x, y = event.xdata, event.ydata
+
+                self.lx.set_ydata(y)
+                self.ly.set_xdata(x)
+
+                self.txt.set_text('x=%1.2f, y=%1.2f' % (x,y))
+
+                self.ax.draw_artist(self.lx)
+                self.ax.draw_artist(self.ly)
+                self.ax.draw_artist(self.txt)
+
+                self.canvas.blit(self.ax.bbox)
+
+class SnapCursor(Cursor):
+        def __init__(self, ax, plot, x, y):
+                Cursor.__init__(self, ax, plot)
+
+                self.x = x
+                self.z = zip(x,y)
+
+                self.x.sort()
+                self.z.sort()
+
+        def on_motion(self, event):
+                if self.hidden or not event.inaxes:
+                        return
+
+                self.canvas.restore_region(self.background)
+
+                x, y = event.xdata, event.ydata
+
+                i = np.searchsorted(self.x, x)
+
+                x, y = self.z[i]
+
+                self.lx.set_ydata(y)
+                self.ly.set_xdata(x)
+
+                self.txt.set_text('x=%1.2f, y=%1.2f' % (x,y))
+
+                self.ax.draw_artist(self.lx)
+                self.ax.draw_artist(self.ly)
+                self.ax.draw_artist(self.txt)
+
+                self.canvas.blit(self.ax.bbox)
 
 # $Id:$
 #
