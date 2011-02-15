@@ -23,7 +23,7 @@ Versioning](http://semver.org) where "unstable", "stable", and
 
 ## REQUIREMENTS
 
- * [Elrond v1.2.0](http://github.com/cdsi/elrond)
+ * [Elrond v1.2.1](http://github.com/cdsi/elrond)
 
 ## CONTRIBUTE
 
