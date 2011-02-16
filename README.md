@@ -8,9 +8,9 @@ Grima contains PyGTK+ plot widgets based on
 
     git clone git@github.com:cdsi/grima.git grima/git-repo
     cd grima
-    git-new-workdir git-repo v1.1.1 v1.1.1
+    git-new-workdir git-repo v1.2.0 v1.2.0
 
-Please note that "grima/v1.1.1" is required by the packages that
+Please note that "grima/v1.2.0" is required by the packages that
 depend upon grima. This allows multiple versions of grima to be
 installed into well-known locations using [Semantic
 Versioning](http://semver.org) where "unstable", "stable", and
@@ -18,7 +18,7 @@ Versioning](http://semver.org) where "unstable", "stable", and
 
 ## BUILD
 
-    cd grima/v1.1.1
+    cd grima/v1.2.0
     yes | ./build.sh
 
 ## REQUIREMENTS
