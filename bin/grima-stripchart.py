@@ -5,6 +5,9 @@ from optparse import OptionParser
 
 import numpy as np
 
+import elrond.widgets
+import grima.widgets
+
 from elrond.ui import Window
 from grima.plot2 import Plot
 
