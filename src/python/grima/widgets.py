@@ -4,16 +4,20 @@ from __future__ import with_statement
 import gobject
 import gtk
 
+from elrond.widgets import Alignment
+
 from grima.plot2 import Plot
 
-class PlotWidget(gtk.Alignment):
+class PlotWidget(Alignment):
         __gtype_name__ = 'PlotWidget'
 
         def __init__(self):
-                gtk.Alignment.__init__(self)
+                Alignment.__init__(self)
 
-                self.plot = Plot()
-                self.add(self.plot.widget)
+                self.subwidget = Plot()
+                self.add(self.subwidget.widget)
+
+gobject.type_register(PlotWidget)
 
 # $Id:$
 #

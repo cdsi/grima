@@ -8,8 +8,7 @@ import numpy as np
 import elrond.widgets
 import grima.widgets
 
-from elrond.ui import Window
-from grima.plot2 import Plot
+from grima.plot2 import PlotApp
 
 op = OptionParser('%prog [options] data1 data2 data3 ...')
 
@@ -20,12 +19,12 @@ op.add_option('--deletable', action='store', dest='deletable', default=True,
 
 (options, args) = op.parse_args()
 
-plot = Plot()
-plot.overlay = True
+app = PlotApp()
+app.title = options.title
+app.deletable = options.deletable
 
-window = Window(widget=plot)
-window.title = options.title
-window.deletable = options.deletable
+plot = app.get_subwidget('grima-subplot-widget')
+plot.overlay = True
 
 x = np.arange(0, 3, .02)
 y = np.exp(x)
@@ -58,8 +57,11 @@ axl.grid(True)
 axl.axhline(0, color='black', lw=2)
 subplot4.draw()
 
-window.show()
-window.run()
+# TODO: this should not be necessary
+plot.show()
+
+app.show()
+app.run()
 
 # $Id:$
 #

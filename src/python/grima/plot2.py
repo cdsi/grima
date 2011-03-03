@@ -352,7 +352,7 @@ class Plot(Widget):
                 Widget.__init__(self)
 
                 path = os.environ['GRIMA_ETC']
-                name = 'grima-plot2'
+                name = 'grima-subplot-widget'
 
                 self.loadui(path, name)
                 self.loaddb(path, name)
@@ -377,6 +377,17 @@ class Plot(Widget):
                 self.__chooser.deletable = False
                 self.__chooser.embedded = True
                 self.__chooser.callback = self.__save
+
+class PlotApp(Widget):
+
+        def __init__(self, *args, **kwargs):
+                Widget.__init__(self, *args, **kwargs)
+
+                path = os.environ['GRIMA_ETC']
+                name = 'grima-subplot-app'
+
+                self.loadui(path, name)
+                self.loaddb(path, name)
 
 class Plot3D(SubPlot):
 
