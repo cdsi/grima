@@ -8,9 +8,9 @@ Grima contains PyGTK+ plot widgets based on
 
     git clone git@github.com:cdsi/grima.git grima/git-repo
     cd grima
-    git-new-workdir git-repo v1.3.0 v1.3.0
+    git-new-workdir git-repo unstable unstable
 
-Please note that "grima/v1.3.0" is required by the packages that
+Please note that "grima/unstable" is required by the packages that
 depend upon grima. This allows multiple versions of grima to be
 installed into well-known locations using [Semantic
 Versioning](http://semver.org) where "unstable", "stable", and
@@ -18,12 +18,12 @@ Versioning](http://semver.org) where "unstable", "stable", and
 
 ## BUILD
 
-    cd grima/v1.3.0
+    cd grima/unstable
     yes | ./build.sh
 
 ## REQUIREMENTS
 
- * [Elrond v1.3.0](http://github.com/cdsi/elrond)
+ * [Elrond unstable](http://github.com/cdsi/elrond)
 
 ## CONTRIBUTE
 
