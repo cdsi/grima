@@ -3,6 +3,9 @@ from __future__ import with_statement
 
 from optparse import OptionParser
 
+import elrond.widgets
+import grima.widgets
+
 from grima.plot import Plot
 
 op = OptionParser('%prog [options] data1 data2 data3 ...')

@@ -9,13 +9,13 @@ OPTION="$1"
 
 case "${OPTION}" in
         *restore-defaults)
-                rm -f "${GRIMA_ETC}"/grima-plot2.ini
+                rm -f "${GRIMA_ETC}"/grima-subplot-widget.ini
                 shift
         ;;
 esac
 
-if [ ! -f "${GRIMA_ETC}"/grima-plot2.ini ]; then
-        cp "${GRIMA_ETC}"/grima-plot2.ini.in "${GRIMA_ETC}"/grima-plot2.ini
+if [ ! -f "${GRIMA_ETC}"/grima-subplot-widget.ini ]; then
+        cp "${GRIMA_ETC}"/grima-subplot-widget.ini.in "${GRIMA_ETC}"/grima-subplot-widget.ini
 fi
 
 echo $$ > "${GRIMA_RUN}"/grima-subplot.pid

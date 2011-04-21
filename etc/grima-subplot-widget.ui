@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <object class="GtkAlignment" id="grima-plot2">
+  <object class="GtkAlignment" id="grima-subplot-widget">
     <property name="visible">True</property>
     <child>
       <object class="GtkVBox" id="vbox">
