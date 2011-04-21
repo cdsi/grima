@@ -21,6 +21,9 @@ from mpl_toolkits.mplot3d import Axes3D
 # www.gtk.org
 import gtk
 
+import gobject
+gobject.threads_init()
+
 # our own libraries
 from elrond.static import *
 from elrond.ui import Widget, Playable, SaveAs
@@ -169,7 +172,7 @@ class SubPlot(Widget):
                 # TODO: self.__set_limits(axr, self.xlimitsr, self.ylimitsr)
                 # TODO: self.__set_labels(axr, self.xlabel, self.ylabel)
 
-                self.__canvas.draw()
+                gobject.idle_add(self.__canvas.draw)
 
         def axes_new(self, figure, canvas, nsubplots):
                 axl = figure.add_subplot(nsubplots + 1, 1, nsubplots + 1)
@@ -320,7 +323,6 @@ class Plot(Widget):
 
                 self.__reset()
 
-                self.__canvas.draw()
                 self.draw()
 
         def show(self):
