@@ -363,6 +363,8 @@ class Plot(Widget):
                 self.__canvas = FigureCanvas(self.__figure)
                 self.__toolbar = NavigationToolbar(self.__canvas, None)
 
+                self.figure = self.__figure
+
                 widget = gtk.VBox()
                 widget.show()
 
