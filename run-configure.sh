@@ -16,7 +16,7 @@ case "${OPTION}" in
 	;;
 esac
 
-./configure --disable-static --enable-coverage --enable-gtk-doc ${GRIMA_CONFIGUREFLAGS} ${EXTENSIONFLAGS}
+./configure ${CONFIGUREFLAGS} ${GRIMA_CONFIGUREFLAGS} ${EXTENSIONFLAGS}
 [ $? != 0 ] && echo "ERROR!!!" && exit 1
 
 exit 0
