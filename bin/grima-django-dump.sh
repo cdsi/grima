@@ -11,4 +11,4 @@ if [ "${FILENAME}" = "" ]; then
     FILENAME="${GRIMA_DATA}"/grima-django-load.json
 fi
 
-exec grima-django-manage.sh loaddata "${FILENAME}"
+exec grima-django-manage.sh dumpdata --natural | python.sh -mjson.tool > "${FILENAME}"

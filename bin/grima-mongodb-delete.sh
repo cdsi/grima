@@ -5,4 +5,4 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec python.sh ${GRIMA_BIN}/grima-django-manage.py "$@" -v 0
+exec mongo "$@" grima < ${GRIMA_ETC}/grima-mongodb-delete.js

@@ -5,4 +5,5 @@ export GRIMA_HOME
 
 . ${GRIMA_HOME}/etc/common
 
-exec grima-django-manage.sh syncdb --noinput
+grima-django-manage.sh syncdb --noinput
+grima-django-manage.sh migrate grima.www.impex
