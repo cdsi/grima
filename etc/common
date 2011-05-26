@@ -65,7 +65,7 @@ grima_record()
 
 grima_recorde()
 {
-        grima_record            "$@"
+        grima_record        "$@"
         echo                    "$@"
 }
 
