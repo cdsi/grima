@@ -4,14 +4,14 @@
   <init-function>glade_python_init</init-function>
 
   <glade-widget-classes>
-    <glade-widget-class generic-name="ExampleWidget" name="ExampleWidget"
-                        title="Example Widget"/>
+    <glade-widget-class generic-name="GrimaExampleWidget" name="GrimaExampleWidget"
+                        title="Grima Example Widget"/>
     <glade-widget-class generic-name="PlotWidget" name="PlotWidget"
                         title="Plot Widget"/>
   </glade-widget-classes>
 
   <glade-widget-group name="Grima" title="Grima">
-    <glade-widget-class-ref name="ExampleWidget"/>
+    <glade-widget-class-ref name="GrimaExampleWidget"/>
     <glade-widget-class-ref name="PlotWidget"/>
   </glade-widget-group>
 

@@ -8,8 +8,8 @@ from elrond.widgets import Alignment
 from grima.plot2 import Plot
 from grima.ui import Example
 
-class ExampleWidget(Alignment):
-        __gtype_name__ = 'ExampleWidget'
+class GrimaExampleWidget(Alignment):
+        __gtype_name__ = 'GrimaExampleWidget'
 
         def __init__(self):
                 Alignment.__init__(self)
@@ -17,7 +17,7 @@ class ExampleWidget(Alignment):
                 self.subwidget = Example()
                 self.add(self.subwidget.widget)
 
-gobject.type_register(ExampleWidget)
+gobject.type_register(GrimaExampleWidget)
 
 class PlotWidget(Alignment):
         __gtype_name__ = 'PlotWidget'
