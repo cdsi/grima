@@ -350,6 +350,9 @@ class Plot(Widget):
         def on_clear(self, widget):
                 self.clear()
 
+        def get_toolbar(self):
+                return self.__toolbar
+
         def __init__(self):
                 Widget.__init__(self)
 
@@ -363,6 +366,7 @@ class Plot(Widget):
                 self.__canvas = FigureCanvas(self.__figure)
                 self.__toolbar = NavigationToolbar(self.__canvas, None)
 
+                self.__canvas.show()
                 self.figure = self.__figure
 
                 widget = gtk.VBox()
