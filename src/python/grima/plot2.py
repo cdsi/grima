@@ -17,6 +17,7 @@ from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanva
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.font_manager import FontProperties
 
 # www.gtk.org
 import gtk
@@ -77,13 +78,14 @@ class SubPlot(Widget):
 
                 axes.grid(True)
 
-        def plotl(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000,\
-		  mec='r', mfc='None', mew=1, ms=6, linewidth=1, label=None, picker=None):
+        def plotl(self, x, y, *args, **kwargs):
                 axes = self.__axes['axl']
+
+                xlabel = kwargs.get('xlabel')
+                ylabel = kwargs.get('ylabel')
                 self.__plot__(axes, xlabel, ylabel)
 
-                pl = axes.plot(x, y, style, color='#%06X' % (color), mec=mec,
-                                mfc=mfc, mew=mew, ms=ms, linewidth=linewidth, label=label, picker=picker)
+                axes.plot(x, y, *args, **kwargs)
 
         def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
                 axes = self.__axes['axl']
@@ -353,6 +355,12 @@ class Plot(Widget):
         def get_toolbar(self):
                 return self.__toolbar
 
+        def draw(self):
+                self.toolbar.update()
+
+                for plot in self.__plotables:
+                        plot.draw()
+
         def __init__(self):
                 Widget.__init__(self)
 
@@ -386,6 +394,133 @@ class Plot(Widget):
                 self.__chooser.embedded = True
                 self.__chooser.callback = self.__save
 
+class PlotImprovedNavigation(Plot):
+        def on_scroll(self, event):
+                if not (event.xdata and event.ydata):
+                        return
+
+                if self.toolbar._views.empty():
+                        self.toolbar.push_current()
+
+                width, height = self.canvas.get_width_height()
+
+                ax = event.inaxes
+
+                xmin, xmax = ax.get_xlim()
+                ymin, ymax = ax.get_ylim()
+
+                xrng = xmax - xmin
+                yrng = ymax - ymin
+
+                xpos = (event.xdata - xmin) / xrng
+                ypos = (event.ydata - ymin) / yrng
+
+                if event.step < 0:
+                        xrng *= 1.33
+                        yrng *= 1.33
+                else:
+                        xrng *= 0.66
+                        yrng *= 0.66
+
+                xmin = event.xdata - xpos * xrng
+                xmax = xmin + xrng
+
+                ymin = event.ydata - ypos * yrng
+                ymax = ymin + yrng
+
+                ax.set_xlim(xmin, xmax)
+                ax.set_ylim(ymin, ymax)
+
+                ax.draw_artist(ax)
+
+                self.toolbar.push_current()
+                self.toolbar.release(event)
+                self.toolbar.draw()
+
+        def on_motion(self, event):
+                fleur_cursor = gtk.gdk.Cursor(gtk.gdk.FLEUR)
+                if event.button in [1,3]:
+                        self.canvas.window.set_cursor(fleur_cursor)
+                else:
+                        self.canvas.window.set_cursor(None)
+
+        def on_double_click(self, event):
+                double_click = self.is_double_click(event.guiEvent)
+
+                if not double_click:
+                        return
+
+                if not (event.xdata and event.ydata):
+                        return
+
+                if self.toolbar._views.empty():
+                        self.toolbar.push_current()
+
+                width, height = self.canvas.get_width_height()
+
+                ax = event.inaxes
+
+                xmin, xmax = ax.get_xlim()
+                ymin, ymax = ax.get_ylim()
+
+                xrng = xmax - xmin
+                yrng = ymax - ymin
+
+                xrng *= 0.66
+                yrng *= 0.66
+
+                xmin = event.xdata - 0.5 * xrng
+                xmax = xmin + xrng
+
+                ymin = event.ydata - 0.5 * yrng
+                ymax = ymin + yrng
+
+                ax.set_xlim(xmin, xmax)
+                ax.set_ylim(ymin, ymax)
+
+                ax.draw_artist(ax)
+
+                self.toolbar.push_current()
+                self.toolbar.release(event)
+                self.toolbar.draw()
+
+        def is_double_click(self, event):
+                ignore_types = [gtk.gdk._2BUTTON_PRESS, gtk.gdk._3BUTTON_PRESS]
+                if event.type in ignore_types:
+                        return
+
+                if event.button == 1:
+                        if self.last_click:
+                                if event.time - self.last_click < 250:
+                                        self.last_click = None
+                                        return True
+                        self.last_click = event.time
+
+                return False
+
+        def __init__(self):
+                super(PlotImprovedNavigation, self).__init__()
+
+                self.canvas.mpl_connect('scroll_event',
+                                                self.on_scroll)
+                self.canvas.mpl_connect('motion_notify_event',
+                                                self.on_motion)
+                self.canvas.mpl_connect('button_press_event',
+                                                self.on_double_click)
+                self.canvas.mpl_connect('button_press_event', 
+                                                self.toolbar.press_pan)
+                self.canvas.mpl_connect('button_release_event', 
+                                                self.toolbar.release_pan)
+
+                self.last_click = None
+
+                toolbar_buttons = self.toolbar.get_children()
+                pan = toolbar_buttons[3]
+                zoom = toolbar_buttons[4]
+
+                pan.hide()
+                zoom.hide()
+
 class PlotApp(Widget):
 
         def __init__(self, *args, **kwargs):
@@ -398,6 +533,26 @@ class PlotApp(Widget):
                 self.loaddb(path, name)
 
 class Plot3D(SubPlot):
+
+        @Property
+        def axl():
+                def fget(self):
+                        return self.__axes['axl']
+
+                def fset(self, value):
+                        pass
+
+                return locals()
+
+        @Property
+        def axr():
+                def fget(self):
+                        return self.__axes['axr']
+
+                def fset(self, value):
+                        pass
+
+                return locals()
 
         def axes_new(self, figure, canvas, nsubplots):
                 axl = Axes3D(figure)
@@ -416,16 +571,22 @@ class Plot3D(SubPlot):
                 axl.yaxis.tick_left()
 
         def draw(self):
-                self.__canvas.draw()
+                gobject.idle_add(self.__canvas.draw)
 
-        def plotl(self, x, y, z, xlabel=None, ylabel=None, label=None):
+        def clear(self):
+                axl = self.__axes['axl']
+                axl.cla()
+                axl.mouse_init()
+
+        def plotl(self, x, y, *args, **kwargs):
                 axes = self.__axes['axl']
-                self.__plot__(axes, xlabel, ylabel)
-                axes.plot(x, y, z, label=label)
-                try:
-                        axes.legend(numpoints=1)
-                except:
-                        pass
+                axes.plot(x, y, *args, **kwargs)
+
+        def legend(self):
+                axl = self.__axes['axl']
+                font_prop = FontProperties()
+                font_prop.set_size('x-small')
+                axl.legend(prop=font_prop)
 
         def __init__(self):
                 SubPlot.__init__(self)
