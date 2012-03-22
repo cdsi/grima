@@ -22,9 +22,6 @@ from matplotlib.font_manager import FontProperties
 # www.gtk.org
 import gtk
 
-import gobject
-gobject.threads_init()
-
 # our own libraries
 from elrond.static import *
 from elrond.ui import Widget, Playable, SaveAs
@@ -174,7 +171,7 @@ class SubPlot(Widget):
                 # TODO: self.__set_limits(axr, self.xlimitsr, self.ylimitsr)
                 # TODO: self.__set_labels(axr, self.xlabel, self.ylabel)
 
-                gobject.idle_add(self.__canvas.draw)
+                self.__canvas.draw()
 
         def axes_new(self, figure, canvas, nsubplots):
                 axl = figure.add_subplot(nsubplots + 1, 1, nsubplots + 1)
@@ -571,7 +568,7 @@ class Plot3D(SubPlot):
                 axl.yaxis.tick_left()
 
         def draw(self):
-                gobject.idle_add(self.__canvas.draw)
+                self.__canvas.draw()
 
         def clear(self):
                 axl = self.__axes['axl']
