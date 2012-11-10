@@ -36,8 +36,8 @@ plot.subplot_delete(subplot1)
 subplot2 = plot.subplot_new()
 subplot2.xlabel = 'X Label'
 subplot2.ylabel = 'Y Label'
-subplot2.plotl(x, y, color=0x00FF00, style='--')
-subplot2.plotl(x, z, color=0x0000FF, style='--')
+subplot2.plotl(x, y, color='#00FF00', linestyle='--')
+subplot2.plotl(x, z, color='#0000FF', linestyle='--')
 subplot2.draw()
 
 subplot3 = plot.subplot_new()
