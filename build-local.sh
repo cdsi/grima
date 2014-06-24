@@ -8,12 +8,12 @@ if [ "${SKIP_QUESTIONS}" = "" ]; then
         read answer
         case "${answer}" in
                 [yY]*)
-                        grima-db-delete.sh
+                        grima-db-delete.sh || true
                 ;;
         esac
 fi
 
-grima-db-load.sh
+grima-db-load.sh || true
 # TODO: [ $? != 0 ] && exit 1
 
 exit 0
