@@ -1,9 +1,19 @@
+# -*- coding utf-8; mode: sh -*-
+
 GRIMA_HOME=${TOPLEVEL:="${GRIMA_HOME}"}
 GRIMA_HOME=$(cd "${GRIMA_HOME}"; pwd)
 export GRIMA_HOME
 
 GRIMA_PERM="${HOME}"/.grima
 export GRIMA_PERM
+
+GRIMA_CACHE="${GRIMA_PERM}"/cache
+export GRIMA_CACHE
+mkdir -p "${GRIMA_CACHE}"
+
+GRIMA_DB="${GRIMA_PERM}"/db
+export GRIMA_DB
+mkdir -p "${GRIMA_DB}"
 
 GRIMA_BIN="${GRIMA_HOME}"/bin
 export GRIMA_BIN
@@ -26,14 +36,8 @@ export GRIMA_VAR
 GRIMA_ARCHIVE="${GRIMA_VAR}"/archive
 export GRIMA_ARCHIVE
 
-GRIMA_CACHE="${GRIMA_PERM}"/cache
-export GRIMA_CACHE
-
 GRIMA_DATA="${GRIMA_VAR}"/data
 export GRIMA_DATA
-
-GRIMA_DB="${GRIMA_PERM}"/db
-export GRIMA_DB
 
 GRIMA_LOG="${GRIMA_VAR}"/log
 export GRIMA_LOG
@@ -52,10 +56,6 @@ export GRIMA_CONFIGUREFLAGS
 
 GRIMA_LOGFILE="${GRIMA_LOG}"/grima.log
 export GRIMA_LOGFILE
-
-# create directories located in "${GRIMA_PERM}"
-mkdir -p "${GRIMA_CACHE}"
-mkdir -p "${GRIMA_DB}"
 
 grima_record()
 {
