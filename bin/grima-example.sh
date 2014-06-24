@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 GRIMA_HOME="$(dirname "$0")"/..
 export GRIMA_HOME
