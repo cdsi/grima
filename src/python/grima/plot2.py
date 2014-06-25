@@ -84,12 +84,12 @@ class SubPlot(Widget):
 
                 axes.plot(x, y, *args, **kwargs)
 
-        def plotlh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
+        def plotlh(self, y, xlabel=None, ylabel=None, linestyle='--', color=0xFF0000):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.axhline(y, ls=style, color='#%06X' % (color))
 
-        def plotlv(self, x, xlabel=None, ylabel=None, style='--', color=0xFF0000):
+        def plotlv(self, x, xlabel=None, ylabel=None, linestyle='--', color=0xFF0000):
                 axes = self.__axes['axl']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.axvline(x, ls=style, color='#%06X' % (color))
@@ -126,19 +126,19 @@ class SubPlot(Widget):
                 return axes.get_xlim() + axes.get_ylim()
 
         @APINotImplemented
-        def plotr(self, x, y, xlabel=None, ylabel=None, style='-', color=0xFF0000):
+        def plotr(self, x, y, xlabel=None, ylabel=None, linestyle='-', color=0xFF0000):
                 axes = self.__axes['axr']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.plot(x, y, style, color='#%06X' % (color))
 
         @APINotImplemented
-        def plotrh(self, y, xlabel=None, ylabel=None, style='--', color=0xFF0000):
+        def plotrh(self, y, xlabel=None, ylabel=None, linestyle='--', color=0xFF0000):
                 axes = self.__axes['axr']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.axhline(y, ls=style, color='#%06X' % (color))
 
         @APINotImplemented
-        def plotrv(self, x, xlabel=None, ylabel=None, style='--', color=0xFF0000):
+        def plotrv(self, x, xlabel=None, ylabel=None, linestyle='--', color=0xFF0000):
                 axes = self.__axes['axr']
                 self.__plot__(axes, xlabel, ylabel)
                 axes.axvline(x, ls=style, color='#%06X' % (color))
