@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-from grima.www.manage import *
+import sys
 
-execute_manager(settings)
+from grima.www.manage import execute_from_command_line
+
+execute_from_command_line(sys.argv)
 
 # $Id:$
 #
