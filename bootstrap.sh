@@ -5,7 +5,7 @@ GRIMA_HOME=$(dirname $0)
 
 cd ${GRIMA_HOME}
 
-GTKDOCSIZE="$(which gtkdocize 2> /dev/null)"
+GTKDOCSIZE="$(which gtkdocize 2> /dev/null || true)"
 if [ -x "${GTKDOCSIZE}" ]; then
         "${GTKDOCSIZE}" --copy --flavour no-tmpl
 else
