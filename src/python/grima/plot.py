@@ -313,6 +313,9 @@ class IMatplotlibBackend(IBackend):
 
                 self.__reset()
 
+        def get_axes(self):
+                return self.__subplots
+
         def __init__(self):
                 IBackend.__init__(self)
 
@@ -607,6 +610,9 @@ class WindowContainer(IContainer):
         def on_plot_window_destroy(self, widget, data=None):
                 gtk.main_quit()
 
+        def get_axes(self):
+                return self.backend.get_axes()
+
         def __init__(self, container):
                 IContainer.__init__(self)
 
@@ -776,6 +782,9 @@ class Plot(Object):
                         return
 
                 self.__display.save(*args, **kwargs)
+
+        def get_axes(self):
+                return self.__display.get_axes()
 
         def __init__(self):
                 Object.__init__(self)
