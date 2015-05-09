@@ -110,7 +110,7 @@ for extra in ${EXTRAS}; do
         TOPLEVEL=
 
         LOCATIONS=" \
-                $(cd "${GRIMA_HOME}"/../..; pwd) \
+                "${GRIMA_HOME}"/../.. \
                 /opt/cdsi \
         "
 
