@@ -597,7 +597,6 @@ class WindowContainer(IContainer):
                 self.__preferences.hide()
 
         def on_plot_preferences_button_clicked(self, widget, data=None):
-                self.__preferences = self.__builder.get_object('preferences_dialog')
                 self.__preferences.show()
 
         def on_preferences_dialog_delete_event(self, widget, data=None):
@@ -622,6 +621,8 @@ class WindowContainer(IContainer):
                 self.__builder = gtk.Builder()
                 self.__builder.add_from_file(buildername)
                 self.__builder.connect_signals(self)
+
+                self.__preferences = self.__builder.get_object('preferences_dialog')
 
                 if container:
                         self.__container = container
