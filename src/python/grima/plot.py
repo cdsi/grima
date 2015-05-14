@@ -265,12 +265,14 @@ class IMatplotlibBackend(IBackend):
 
         def draw(self):
                 limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminl, self.prefs.ymaxl]
-                for subplot in self.__subplots:
-                        self.__draw(subplot['axl'], limits)
+                for i, subplot in enumerate(self.__subplots):
+                        if i > 0:
+                                self.__draw(subplot['axl'], limits)
 
                 # limits = [self.prefs.xmin, self.prefs.xmax, self.prefs.yminr, self.prefs.ymaxr]
-                # for subplot in self.__subplots:
-                #         self.__draw(subplot['axr'], limits)
+                # for i, subplot in enumerate(self.__subplots):
+                #         if i > 0:
+                #                 self.__draw(subplot['axr'], limits)
 
                 self.canvas.draw()
 
